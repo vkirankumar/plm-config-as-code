@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node src/index.ts",
     "check": "node dist/index.js",
+    "compare": "node src/compare.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,5 +19,9 @@
     "@types/node": "^25.0.3",
     "liquibase": "^4.28.1",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@types/pg": "^8.16.0",
+    "pg": "^8.16.3"
   }
 }
