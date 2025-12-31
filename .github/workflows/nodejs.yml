@@ -42,7 +42,7 @@ jobs:
         run: npm run check
 
       - name: Check DB diff
-        run: echo ${{ steps.getdata.outputs.diffFileName }}
+        run: echo ${{ steps.diffChecker.outputs.diffFileName }}
       # - name: Create commits
       #   run: |
       #     git config user.name 'Kiran Kumar'
