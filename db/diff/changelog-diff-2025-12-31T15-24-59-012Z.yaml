@@ -1,0 +1,35 @@
+databaseChangeLog:
+- changeSet:
+    id: 1767194725496-1
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: service_pkey
+            name: id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: TEXT
+        tableName: service
+- changeSet:
+    id: 1767194725496-2
+    author: runner (generated)
+    changes:
+    - insert:
+        columns:
+        - column:
+            name: id
+            valueNumeric: 1
+        - column:
+            name: name
+            value: MOBILE
+        tableName: service
+
