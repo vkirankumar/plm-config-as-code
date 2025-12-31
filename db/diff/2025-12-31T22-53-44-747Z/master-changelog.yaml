@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: disable-fk-1767221626428
+      author: auto-generated
+      changes:
+        - sql:
+            sql: SET session_replication_role = replica;
+  - include:
+      file: ./db/diff/2025-12-31T22-53-44-747Z/catalog-data-diff.yaml
+  - changeSet:
+      id: enable-fk-1767221626429
+      author: auto-generated
+      changes:
+        - sql:
+            sql: SET session_replication_role = DEFAULT;
