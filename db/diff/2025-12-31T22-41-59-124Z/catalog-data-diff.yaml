@@ -1,0 +1,46 @@
+databaseChangeLog:
+- changeSet:
+    id: catalog-insert-batch-0-1767220922067
+    author: auto-generated
+    preConditions:
+      onFail: MARK_RAN
+    changes:
+      - insert:
+          tableName: catalog
+          columns:
+            - column:
+                name: catalog_id
+                value: 4
+            - column:
+                name: code
+                value: 'Tttt'
+            - column:
+                name: name
+                value: 'Cat'
+            - column:
+                name: test
+                value: '1                                                                                                                                                                                                       '
+            - column:
+                name: catalog_id
+                value: 5
+            - column:
+                name: code
+                value: 'ABDC'
+            - column:
+                name: name
+                value: 'Cat'
+            - column:
+                name: test
+                value: '1                                                                                                                                                                                                       '
+            - column:
+                name: catalog_id
+                value: 6
+            - column:
+                name: code
+                value: 'AB11DC'
+            - column:
+                name: name
+                value: 'Cat'
+            - column:
+                name: test
+                value: '6                                                                                                                                                                                                       '
