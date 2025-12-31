@@ -1,0 +1,16 @@
+databaseChangeLog:
+- changeSet:
+    id: service-insert-batch-0-1767219838814
+    author: auto-generated
+    preConditions:
+      onFail: MARK_RAN
+    changes:
+      - insert:
+          tableName: service
+          columns:
+            - column:
+                name: id
+                value: 6
+            - column:
+                name: name
+                value: 'Klir & Klaar'

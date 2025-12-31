@@ -4,9 +4,9 @@ name: Node JS CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    #branches: [ "main" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "test" ]
+    branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -40,10 +40,10 @@ jobs:
 
       - name: Transform 
         id: transform
-        run: npm run check
+        run: npm run compare
 
       - name: Check DB diff
-        run: echo ${{ steps.transform.outputs.diffFileName }}
+        run: echo ${{ steps.transform.outputs.diffPath }}
 
       # - name: Create commits
       #   run: |
@@ -59,7 +59,7 @@ jobs:
 
       - name: Create Pull Request
         id: cpr
-        if: ${{ steps.transform.outputs.diffFileName != '' && steps.transform.outputs.diffFileName != null }}
+        if: ${{ steps.transform.outputs.diffPath != '' && steps.transform.outputs.diffPath != null }}
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

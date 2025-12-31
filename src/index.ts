@@ -6,7 +6,7 @@ import {
 import fs from 'fs';
 
 const args = process.argv.slice(2);
-const path = process.env.GITHUB_OUTPUT;
+const output = process.env.GITHUB_OUTPUT;
 
 // const config_dev = {
 //     ...POSTGRESQL_DEFAULT_CONFIG,
@@ -108,8 +108,8 @@ const diffChangeLog = async () => {
     await liquibase.diffChangelog({diffTypes});
     if (fs.existsSync(`./db/diff/${fileName}`)) {
         log(`Diff ${fileName} generated successfully!!!`);
-        if (path) {
-            fs.appendFileSync(path, `diffFileName=${fileName}\n`);
+        if (output) {
+            fs.appendFileSync(output, `diffFileName=${fileName}\n`);
         }
     } else {
         log("Schemas are equal");
