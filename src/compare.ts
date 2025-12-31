@@ -7,19 +7,33 @@ types.setTypeParser(1082, (val: string) => val); // 1082 = PostgreSQL DATE type
 
 // Configure database connections
 const refDbConfig = {
-  host: "localhost",
-  port: 4001,
+  // dev
+  // host: "localhost",
+  // port: 4001,
+  // database: "dev",
+  // user: "postgres",
+  // password: "postgres",
+  // prod
+  host: "ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech",
+  port: 5432,
   database: "dev",
-  user: "postgres",
-  password: "postgres",
+  user: "neondb_owner",
+  password: "npg_cweS1VpKl0JL",
 };
 
 const targetDbConfig = {
-  host: "localhost",
-  port: 4001,
+  // dev
+  // host: "localhost",
+  // port: 4001,
+  // database: "prod",
+  // user: "postgres",
+  // password: "postgres",
+  // prod
+  host: "ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech",
+  port: 5432,
   database: "prod",
-  user: "postgres",
-  password: "postgres",
+  user: "neondb_owner",
+  password: "npg_cweS1VpKl0JL",
 };
 
 // --- Types ---
