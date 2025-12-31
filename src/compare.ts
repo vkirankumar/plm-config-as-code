@@ -19,6 +19,9 @@ const refDbConfig = {
   database: "dev",
   user: "neondb_owner",
   password: "npg_cweS1VpKl0JL",
+  ssl: {
+    rejectUnauthorized: false, // common for cloud / internal certs
+  }
 };
 
 const targetDbConfig = {
@@ -34,6 +37,9 @@ const targetDbConfig = {
   database: "prod",
   user: "neondb_owner",
   password: "npg_cweS1VpKl0JL",
+  ssl: {
+    rejectUnauthorized: false, // common for cloud / internal certs
+  }
 };
 
 // --- Types ---
@@ -59,7 +65,7 @@ const tables = [
   "rel_o2o",
   "product_specification",
   "product_offering",
-  "service",
+  // "service",
 ];
 
 const BATCH_SIZE = 50;
