@@ -40,7 +40,7 @@ jobs:
 
       - name: Transform 
         id: transform
-        run: npm run compare
+        run: npm run compare:prod
 
       - name: Check DB diff
         run: echo ${{ steps.transform.outputs.diffPath }}

@@ -4,11 +4,11 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "tsx",
     "build": "tsc",
     "start": "node src/index.ts",
-    "check": "node dist/index.js",
+    "start:prod": "node dist/index.js",
     "compare": "node src/compare.ts",
+    "compare:prod": "node dist/compare.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
