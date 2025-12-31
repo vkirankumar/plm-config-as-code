@@ -32,7 +32,7 @@ const init = async () => {
         // generateChangeLog();
         // diff();
         // update();
-        // diffChangeLog();
+        await diffChangeLog();
         log("Completed!!");
     } catch (error) {
         log("Failed with error " + error);
@@ -82,11 +82,12 @@ const diffChangeLog = async () => {
     const fileName = `changelog-diff-${timeStamp}.yaml`;
     const config = {
         ...POSTGRESQL_DEFAULT_CONFIG,
-        password: 'postgres',
-        url: 'jdbc:postgresql://localhost:4001/prod',
-        referenceUrl: 'jdbc:postgresql://localhost:4001/dev',
-        referenceUsername: 'postgres',
-        referencePassword: 'postgres',
+        password: 'npg_cweS1VpKl0JL',
+        username: 'neondb_owner',
+        url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/prod',
+        referenceUrl: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/dev',
+        referenceUsername: 'neondb_owner',
+        referencePassword: 'npg_cweS1VpKl0JL',
         schemas: 'public',
         referenceSchemas: 'public',
         changeLogFile: `./db/diff/${fileName}`,
