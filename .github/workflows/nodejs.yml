@@ -39,10 +39,11 @@ jobs:
         run: npm run build
 
       - name: Transform 
+        id: transform
         run: npm run check
 
       - name: Check DB diff
-        run: echo ${{ steps.diffChecker.outputs.diffFileName }}
+        run: echo ${{ steps.transform.outputs.diffFileName }}
       # - name: Create commits
       #   run: |
       #     git config user.name 'Kiran Kumar'
