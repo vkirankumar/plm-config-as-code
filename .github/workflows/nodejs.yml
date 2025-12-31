@@ -44,6 +44,7 @@ jobs:
 
       - name: Check DB diff
         run: echo ${{ steps.transform.outputs.diffFileName }}
+
       # - name: Create commits
       #   run: |
       #     git config user.name 'Kiran Kumar'
@@ -55,21 +56,23 @@ jobs:
       #     git commit -m "Add untracked file during workflow"
       # - name: Uncommitted change
       #   run: date +%s > report.txt
-      # - name: Create Pull Request
-      #   id: cpr
-      #   uses: peter-evans/create-pull-request@v8
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     commit-message: Update report
-      #     committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-      #     author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
-      #     signoff: false
-      #     branch: 'auto-pr-branch'
-      #     base: main
-      #     delete-branch: true
-      #     title: 'PR: PLM catalogue changes'
-      #     body: |
-      #       AUTO GENERATED PR:
-      #       - PLM catalogue changes between design time and runtime catalog.
-      #     labels: |
-      #       automated pr
+
+      - name: Create Pull Request
+        id: cpr
+        if: ${{ steps.transform.outputs.diffFileName != '' && steps.transform.outputs.diffFileName != null }}
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Update report
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: 'auto-pr-branch-${{ steps.transform.outputs.diffFileName }}'
+          base: main
+          delete-branch: true
+          title: 'PR: PLM catalogue changes'
+          body: |
+            AUTO GENERATED PR:
+            - PLM catalogue changes between design time and runtime catalog.
+          labels: |
+            automated pr
