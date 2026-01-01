@@ -366,7 +366,7 @@ async function run() {
   const master = [
     "databaseChangeLog:",
     ...diffs.map(
-      (d) => `  - include:\n      file: data-diffs/${d.table}-data.yaml`
+      (d) => `  - include:\n      file: ${OUTPUT_DIR}/${d.table}-data.yaml`
     ),
   ].join("\n");
 

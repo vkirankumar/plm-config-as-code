@@ -32,7 +32,7 @@ const init = async () => {
     try {
         // generateChangeLog();
         // diff();
-        // update();
+        await update();
         // await diffChangeLog();
         log("Completed!!");
     } catch (error) {
@@ -74,7 +74,7 @@ const update = (): void => {
         username: 'neondb_owner',
         url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/dev',
         // changeLogFile: './db/master/changelog-schema.yaml',
-        changeLogFile: './data-diffs/master-changelog.yaml',
+        changeLogFile: './db/data-diffs/2026-01-01T12-18-14-818Z/master-changelog.yaml',
     };
     const liquibase: Liquibase = new Liquibase(config);
     liquibase.update({});
