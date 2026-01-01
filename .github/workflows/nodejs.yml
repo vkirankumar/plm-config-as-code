@@ -43,7 +43,7 @@ jobs:
         run: npm run compare:prod
 
       - name: Check DB diff
-        run: echo ${{ steps.transform.outputs.diffPath }}
+        run: echo Data diff generated in directory = ${{ steps.transform.outputs.diffPath }}
 
       # - name: Create commits
       #   run: |
@@ -63,7 +63,7 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Sync with dev ${{ steps.transform.outputs.diffPath }}
+          commit-message: Sync with reference DB ${{ steps.transform.outputs.diffPath }}
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           signoff: false

@@ -1,6 +1,6 @@
-import { Client, types } from 'pg';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Client, types } from "pg";
+import * as fs from "fs";
+import * as path from "path";
 
 types.setTypeParser(1082, (val: string) => val); // DATE
 
@@ -12,22 +12,24 @@ type TableDiff = { table: string; yaml: string };
 
 // ────────────── CONFIG ──────────────
 const refDbConfig = {
-  host: 'ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech',
+  host: "ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech",
   port: 5432,
-  database: 'prod',
-  user: 'neondb_owner',
-  password: 'npg_cweS1VpKl0JL',
-  ssl: { rejectUnauthorized: false }
+  database: "prod",
+  user: "neondb_owner",
+  password: "npg_cweS1VpKl0JL",
+  ssl: { rejectUnauthorized: false },
 };
 
 const targetDbConfig = {
-  host: 'ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech',
+  host: "ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech",
   port: 5432,
-  database: 'dev',
-  user: 'neondb_owner',
-  password: 'npg_cweS1VpKl0JL',
-  ssl: { rejectUnauthorized: false }
+  database: "dev",
+  user: "neondb_owner",
+  password: "npg_cweS1VpKl0JL",
+  ssl: { rejectUnauthorized: false },
 };
+
+const output = process.env.GITHUB_OUTPUT;
 
 // Only these tables will be included. Empty = all tables.
 const ALLOWED_TABLES = new Set<string>([
@@ -45,23 +47,23 @@ const ALLOWED_TABLES = new Set<string>([
   // "rel_o2o",
 ]);
 
-const timeStamp: string  = new Date().toISOString().replace(/[:.&]/g, "-");
+const timeStamp: string = new Date().toISOString().replace(/[:.&]/g, "-");
 const OUTPUT_DIR = `./db/data-diffs/${timeStamp}`;
-const INTERNAL_TABLES = ['databasechangelog', 'databasechangeloglock'];
+const INTERNAL_TABLES = ["databasechangelog", "databasechangeloglock"];
 
 // ────────────── HELPERS ──────────────
 function yamlValue(v: any): string {
-  if (v === null) return 'null';
-  if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+  if (v === null) return "null";
+  if (typeof v === "number" || typeof v === "boolean") return String(v);
   return `'${String(v).replace(/'/g, "''")}'`;
 }
 
 function rowKey(row: Row, pk: TablePK): string {
-  return pk.map(c => String(row[c])).join('|');
+  return pk.map((c) => String(row[c])).join("|");
 }
 
 function whereClause(row: Row, pk: TablePK): string {
-  return pk.map(c => `${c} = ${yamlValue(row[c])}`).join(' AND ');
+  return pk.map((c) => `${c} = ${yamlValue(row[c])}`).join(" AND ");
 }
 
 // ────────────── DB METADATA LOADERS ──────────────
@@ -73,10 +75,11 @@ async function loadTables(client: Client): Promise<string[]> {
   `);
 
   return res.rows
-    .map(r => r.table_name.toLowerCase())
-    .filter(t =>
-      !INTERNAL_TABLES.includes(t) &&
-      (ALLOWED_TABLES.size === 0 || ALLOWED_TABLES.has(t))
+    .map((r) => r.table_name.toLowerCase())
+    .filter(
+      (t) =>
+        !INTERNAL_TABLES.includes(t) &&
+        (ALLOWED_TABLES.size === 0 || ALLOWED_TABLES.has(t))
     );
 }
 
@@ -92,7 +95,7 @@ async function loadPKs(client: Client): Promise<Map<string, TablePK>> {
   `);
 
   const map = new Map<string, string[]>();
-  res.rows.forEach(r => {
+  res.rows.forEach((r) => {
     const t = r.table_name.toLowerCase();
     if (!map.has(t)) map.set(t, []);
     map.get(t)!.push(r.column_name.toLowerCase());
@@ -111,19 +114,21 @@ async function loadFKs(client: Client): Promise<FK[]> {
   `);
 
   return res.rows
-    .map(r => ({
+    .map((r) => ({
       childTable: r.child.toLowerCase(),
-      parentTable: r.parent.toLowerCase()
+      parentTable: r.parent.toLowerCase(),
     }))
-    .filter(fk => ALLOWED_TABLES.size === 0 || ALLOWED_TABLES.has(fk.childTable));
+    .filter(
+      (fk) => ALLOWED_TABLES.size === 0 || ALLOWED_TABLES.has(fk.childTable)
+    );
 }
 
 // ────────────── FK-SAFE TOPO SORT ──────────────
 function topoSortTables(tables: string[], fks: FK[]): string[] {
   const graph = new Map<string, Set<string>>();
-  tables.forEach(t => graph.set(t, new Set()));
+  tables.forEach((t) => graph.set(t, new Set()));
 
-  fks.forEach(fk => {
+  fks.forEach((fk) => {
     graph.get(fk.childTable)?.add(fk.parentTable);
   });
 
@@ -147,7 +152,11 @@ function topoSortTables(tables: string[], fks: FK[]): string[] {
 }
 
 // ────────────── GENERATE NEW TABLE CHANGELOG ──────────────
-async function generateNewTableChangeLog(table: string, pk: TablePK, ref: Client): Promise<TableDiff> {
+async function generateNewTableChangeLog(
+  table: string,
+  pk: TablePK,
+  ref: Client
+): Promise<TableDiff> {
   const colRes = await ref.query(`
     SELECT column_name, data_type, is_nullable
     FROM information_schema.columns
@@ -155,10 +164,10 @@ async function generateNewTableChangeLog(table: string, pk: TablePK, ref: Client
     ORDER BY ordinal_position
   `);
 
-  const columns = colRes.rows.map(r => ({
+  const columns = colRes.rows.map((r) => ({
     name: r.column_name,
     type: r.data_type,
-    nullable: r.is_nullable === 'YES'
+    nullable: r.is_nullable === "YES",
   }));
 
   const lines: string[] = [];
@@ -172,21 +181,30 @@ async function generateNewTableChangeLog(table: string, pk: TablePK, ref: Client
       - createTable:
           tableName: ${table}
           columns:
-${columns.map(c =>
-  `            - column:\n                name: ${c.name}\n                type: ${c.type}${c.nullable ? '' : '\n                constraints:\n                  nullable: false'}`
-).join('\n')}`);
+${columns
+  .map(
+    (c) =>
+      `            - column:\n                name: ${
+        c.name
+      }\n                type: ${c.type}${
+        c.nullable
+          ? ""
+          : "\n                constraints:\n                  nullable: false"
+      }`
+  )
+  .join("\n")}`);
 
   // primary key
   if (pk.length > 0) {
     lines.push(`
       - addPrimaryKey:
           tableName: ${table}
-          columnNames: ${pk.join(', ')}`);
+          columnNames: ${pk.join(", ")}`);
   }
 
   // row inserts
   const refRows: Row[] = (await ref.query(`SELECT * FROM ${table}`)).rows;
-  refRows.forEach(r => {
+  refRows.forEach((r) => {
     lines.push(`
 - changeSet:
     id: ${table}-insert-${rowKey(r, pk)}
@@ -195,16 +213,29 @@ ${columns.map(c =>
       - insert:
           tableName: ${table}
           columns:
-${Object.entries(r).map(([c, v]) =>
-  `            - column:\n                name: ${c}\n                value: ${yamlValue(v)}`
-).join('\n')}`);
+${Object.entries(r)
+  .map(
+    ([c, v]) =>
+      `            - column:\n                name: ${c}\n                value: ${yamlValue(
+        v
+      )}`
+  )
+  .join("\n")}`);
   });
 
-  return { table, yaml: `databaseChangeLog:\n${lines.join('\n')}`.trim() + '\n' };
+  return {
+    table,
+    yaml: `databaseChangeLog:\n${lines.join("\n")}`.trim() + "\n",
+  };
 }
 
 // ────────────── GENERATE TABLE DIFF ──────────────
-async function generateTableDiff(table: string, pk: TablePK, ref: Client, tgt: Client): Promise<TableDiff | null> {
+async function generateTableDiff(
+  table: string,
+  pk: TablePK,
+  ref: Client,
+  tgt: Client
+): Promise<TableDiff | null> {
   if (!pk || pk.length === 0) {
     console.warn(`⚠️ Table "${table}" has no primary key. Skipping.`);
     return null;
@@ -212,22 +243,25 @@ async function generateTableDiff(table: string, pk: TablePK, ref: Client, tgt: C
 
   const refRows: Row[] = (await ref.query(`SELECT * FROM ${table}`)).rows;
   let tgtRows: Row[] = [];
-  try { tgtRows = (await tgt.query(`SELECT * FROM ${table}`)).rows; } catch {}
-  
-  const refMap = new Map(refRows.map(r => [rowKey(r, pk), r]));
-  const tgtMap = new Map(tgtRows.map(r => [rowKey(r, pk), r]));
+  try {
+    tgtRows = (await tgt.query(`SELECT * FROM ${table}`)).rows;
+  } catch {}
 
-  const inserts = refRows.filter(r => !tgtMap.has(rowKey(r, pk)));
-  const deletes = tgtRows.filter(r => !refMap.has(rowKey(r, pk)));
-  const updates = refRows.filter(r => {
+  const refMap = new Map(refRows.map((r) => [rowKey(r, pk), r]));
+  const tgtMap = new Map(tgtRows.map((r) => [rowKey(r, pk), r]));
+
+  const inserts = refRows.filter((r) => !tgtMap.has(rowKey(r, pk)));
+  const deletes = tgtRows.filter((r) => !refMap.has(rowKey(r, pk)));
+  const updates = refRows.filter((r) => {
     const t = tgtMap.get(rowKey(r, pk));
-    return t && Object.keys(r).some(c => String(r[c]) !== String(t[c]));
+    return t && Object.keys(r).some((c) => String(r[c]) !== String(t[c]));
   });
 
   if (!inserts.length && !updates.length && !deletes.length) return null;
 
   const lines: string[] = [];
-  for (const r of inserts) lines.push(`
+  for (const r of inserts)
+    lines.push(`
 - changeSet:
     id: ${table}-insert-${rowKey(r, pk)}
     author: auto
@@ -235,13 +269,20 @@ async function generateTableDiff(table: string, pk: TablePK, ref: Client, tgt: C
       - insert:
           tableName: ${table}
           columns:
-${Object.entries(r).map(([c, v]) =>
-  `            - column:\n                name: ${c}\n                value: ${yamlValue(v)}`
-).join('\n')}`);
-  
+${Object.entries(r)
+  .map(
+    ([c, v]) =>
+      `            - column:\n                name: ${c}\n                value: ${yamlValue(
+        v
+      )}`
+  )
+  .join("\n")}`);
+
   for (const r of updates) {
     const t = tgtMap.get(rowKey(r, pk))!;
-    const changed = Object.entries(r).filter(([c, v]) => String(v) !== String(t[c]));
+    const changed = Object.entries(r).filter(
+      ([c, v]) => String(v) !== String(t[c])
+    );
     lines.push(`
 - changeSet:
     id: ${table}-update-${rowKey(r, pk)}
@@ -250,13 +291,19 @@ ${Object.entries(r).map(([c, v]) =>
       - update:
           tableName: ${table}
           columns:
-${changed.map(([c, v]) =>
-  `            - column:\n                name: ${c}\n                value: ${yamlValue(v)}`
-).join('\n')}
+${changed
+  .map(
+    ([c, v]) =>
+      `            - column:\n                name: ${c}\n                value: ${yamlValue(
+        v
+      )}`
+  )
+  .join("\n")}
           where: ${whereClause(r, pk)}`);
   }
 
-  for (const r of deletes) lines.push(`
+  for (const r of deletes)
+    lines.push(`
 - changeSet:
     id: ${table}-delete-${rowKey(r, pk)}
     author: auto
@@ -265,7 +312,10 @@ ${changed.map(([c, v]) =>
           tableName: ${table}
           where: ${whereClause(r, pk)}`);
 
-  return { table, yaml: `databaseChangeLog:\n${lines.join('\n')}`.trim() + '\n' };
+  return {
+    table,
+    yaml: `databaseChangeLog:\n${lines.join("\n")}`.trim() + "\n",
+  };
 }
 
 // ────────────── MAIN ──────────────
@@ -280,11 +330,11 @@ async function run() {
   const pkMap = await loadPKs(ref);
   const fks = await loadFKs(ref);
 
-  const existingTables = refTables.filter(t => targetTables.includes(t));
-  const newTables = refTables.filter(t => !targetTables.includes(t));
+  const existingTables = refTables.filter((t) => targetTables.includes(t));
+  const newTables = refTables.filter((t) => !targetTables.includes(t));
 
   const orderedTables = topoSortTables(existingTables, fks);
-  console.log('✅ FK-safe table order:', orderedTables.join(', '));
+  console.log("✅ FK-safe table order:", orderedTables.join(", "));
 
   const diffs: TableDiff[] = [];
 
@@ -303,28 +353,33 @@ async function run() {
   }
 
   if (!diffs.length) {
-    console.log('✅ No changes detected. Nothing generated.');
+    console.log("✅ No changes detected. Nothing generated.");
     await ref.end();
     await tgt.end();
     return;
   }
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  for (const d of diffs) fs.writeFileSync(path.join(OUTPUT_DIR, `${d.table}-data.yaml`), d.yaml);
+  for (const d of diffs)
+    fs.writeFileSync(path.join(OUTPUT_DIR, `${d.table}-data.yaml`), d.yaml);
 
   const master = [
-    'databaseChangeLog:',
-    ...diffs.map(d => `  - include:\n      file: data-diffs/${d.table}-data.yaml`)
-  ].join('\n');
+    "databaseChangeLog:",
+    ...diffs.map(
+      (d) => `  - include:\n      file: data-diffs/${d.table}-data.yaml`
+    ),
+  ].join("\n");
 
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'master-changelog.yaml'), master);
-
+  fs.writeFileSync(path.join(OUTPUT_DIR, "master-changelog.yaml"), master);
+  if (output) {
+      fs.appendFileSync(output, `diffPath=${timeStamp}\n`);
+  }
   await ref.end();
   await tgt.end();
-  console.log('✅ Master changelog generated.');
+  console.log("✅ Master changelog generated.");
 }
 
-run().catch(err => {
-  console.error('❌ Error:', err.message);
+run().catch((err) => {
+  console.error("❌ Error:", err.message);
   process.exit(1);
 });
