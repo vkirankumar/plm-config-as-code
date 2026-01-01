@@ -1,4 +1,4 @@
-name: Run catalogue sync
+name: Validate PR
 
 # Controls when the workflow will run
 on:

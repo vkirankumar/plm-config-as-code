@@ -1,4 +1,4 @@
-name: Run catalogue sync
+name: Apply changes on merge
 
 # Controls when the workflow will run
 on:
