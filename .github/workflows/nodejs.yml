@@ -45,17 +45,32 @@ jobs:
       - name: Check DB diff
         run: echo Data diff generated in directory = ${{ steps.transform.outputs.diffPath }}
 
-      # - name: Create commits
-      #   run: |
-      #     git config user.name 'Kiran Kumar'
-      #     git config user.email 'vkirankumar@github.com'
-      #     date +%s > report.txt
-      #     git commit -am "Modify tracked file during workflow"
-      #     date +%s > new-report.txt
-      #     git add -A
-      #     git commit -m "Add untracked file during workflow"
-      # - name: Uncommitted change
-      #   run: date +%s > report.txt
+      - name: List open PRs from branches starting with 'auto-pr'
+        id: list_prs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          echo "Fetching PRs from branches starting with 'auto-pr'"
+          PRS=$(gh pr list --state open --json number,headRefName --jq '.[] | select(.headRefName | startswith("auto-pr")) | .number')
+          
+          if [ -z "$PRS" ]; then
+            echo "No PRs found from auto-pr branches."
+            echo "PRS_TO_CLOSE=" >> $GITHUB_ENV
+          else
+            echo "Found PRs to close: $PRS"
+            echo "PRS_TO_CLOSE=$PRS" >> $GITHUB_ENV
+          fi
+
+      - name: Close PRs
+        if: env.PRS_TO_CLOSE != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          for PR in $PRS_TO_CLOSE; do
+            BRANCH=$(gh pr view $PR --json headRefName --jq '.headRefName')
+            echo "Closing PR #$PR from branch $BRANCH"
+            gh pr close $PR --delete-branch
+          done
 
       - name: Create Pull Request
         id: cpr
