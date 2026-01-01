@@ -21,7 +21,7 @@ const output = process.env.GITHUB_OUTPUT;
 //     url: 'jdbc:postgresql://localhost:4001/prod',
 // };
 
-const diffTypes: string = "data,table,column,primaryKey,index,foreignKey,uniqueConstraint";
+const diffTypes: string = "table,column,primaryKey,index,foreignKey,uniqueConstraint";
 // const referenceParam: string = ' --referenceUrl=jdbc:postgresql://localhost:4001/preprod --referenceUsername=postgres referencePassword=postgres';
 // const liquibase_dev: Liquibase = new Liquibase(config_dev);
 // const liquibase_prod: Liquibase = new Liquibase(config_prod);
@@ -67,28 +67,29 @@ const diff = async () => {
     log(diff);
 }
 
+const update = (): void => {
+    const config = {
+        ...POSTGRESQL_DEFAULT_CONFIG,
+        password: 'npg_cweS1VpKl0JL',
+        username: 'neondb_owner',
+        url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/dev',
+        // changeLogFile: './db/master/changelog-schema.yaml',
+        changeLogFile: './data-diffs/master-changelog.yaml',
+    };
+    const liquibase: Liquibase = new Liquibase(config);
+    liquibase.update({});
+}
+
 // const update = (): void => {
 //     const config = {
 //         ...POSTGRESQL_DEFAULT_CONFIG,
-//         password: 'npg_cweS1VpKl0JL',
-//         username: 'neondb_owner',
-//         url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/prod',
+//         password: 'postgres',
+//         url: 'jdbc:postgresql://localhost:4001/prod',
 //         changeLogFile: './master-changelog.yaml',
 //     };
 //     const liquibase: Liquibase = new Liquibase(config);
 //     liquibase.update({});
 // }
-
-const update = (): void => {
-    const config = {
-        ...POSTGRESQL_DEFAULT_CONFIG,
-        password: 'postgres',
-        url: 'jdbc:postgresql://localhost:4001/prod',
-        changeLogFile: './master-changelog.yaml',
-    };
-    const liquibase: Liquibase = new Liquibase(config);
-    liquibase.update({});
-}
 
 const diffChangeLog = async () => {
     const fileName = `changelog-diff-${timeStamp}.yaml`;
@@ -96,7 +97,7 @@ const diffChangeLog = async () => {
         ...POSTGRESQL_DEFAULT_CONFIG,
         password: 'npg_cweS1VpKl0JL',
         username: 'neondb_owner',
-        url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/prod',
+        url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb',
         referenceUrl: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/dev',
         referenceUsername: 'neondb_owner',
         referencePassword: 'npg_cweS1VpKl0JL',

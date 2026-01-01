@@ -1,456 +1,330 @@
-import { Client, types } from "pg";
-import * as fs from "fs";
-import { log } from 'console';
+import { Client, types } from 'pg';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// --- Fix DATE type parsing: return string, not JS Date ---
-types.setTypeParser(1082, (val: string) => val); // 1082 = PostgreSQL DATE type
+types.setTypeParser(1082, (val: string) => val); // DATE
 
-// Configure database connections
+// ────────────── TYPES ──────────────
+type Row = Record<string, any>;
+type TablePK = string[];
+type FK = { childTable: string; parentTable: string };
+type TableDiff = { table: string; yaml: string };
+
+// ────────────── CONFIG ──────────────
 const refDbConfig = {
-  // dev
-  // host: "localhost",
-  // port: 4001,
-  // database: "dev",
-  // user: "postgres",
-  // password: "postgres",
-  // prod
-  host: "ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech",
+  host: 'ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech',
   port: 5432,
-  database: "dev",
-  user: "neondb_owner",
-  password: "npg_cweS1VpKl0JL",
-  ssl: {
-    rejectUnauthorized: false, // common for cloud / internal certs
-  }
+  database: 'prod',
+  user: 'neondb_owner',
+  password: 'npg_cweS1VpKl0JL',
+  ssl: { rejectUnauthorized: false }
 };
 
 const targetDbConfig = {
-  // dev
-  // host: "localhost",
-  // port: 4001,
-  // database: "prod",
-  // user: "postgres",
-  // password: "postgres",
-  // prod
-  host: "ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech",
+  host: 'ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech',
   port: 5432,
-  database: "prod",
-  user: "neondb_owner",
-  password: "npg_cweS1VpKl0JL",
-  ssl: {
-    rejectUnauthorized: false, // common for cloud / internal certs
-  }
+  database: 'dev',
+  user: 'neondb_owner',
+  password: 'npg_cweS1VpKl0JL',
+  ssl: { rejectUnauthorized: false }
 };
 
-// --- Types ---
-type Row = { [column: string]: any };
-type ColumnInfo = { name: string; data_type: string };
-type UpdateRow = { refRow: Row; targetRow: Row };
+// Only these tables will be included. Empty = all tables.
+const ALLOWED_TABLES = new Set<string>([
+  // "catalog",
+  // "spec_characteristic",
+  // "product_specification",
+  // "offering_category",
+  // "product_offering",
+  // "material",
+  // "offering_characteristic",
+  // "price_component",
+  // "price_value",
+  // "rel_c2c",
+  // "rel_c2o",
+  // "rel_o2o",
+]);
 
-const timeStamp: string = new Date().toISOString().replace(/[:.&]/g, "-");
-const output = process.env.GITHUB_OUTPUT;
-const directory = `./db/diff/${timeStamp}`;
+const timeStamp: string  = new Date().toISOString().replace(/[:.&]/g, "-");
+const OUTPUT_DIR = `./db/data-diffs/${timeStamp}`;
+const INTERNAL_TABLES = ['databasechangelog', 'databasechangeloglock'];
 
-// Tables to compare
-const tables = [
-  "catalog",
-  "material",
-  "offering_category",
-  "offering_characteristic",
-  "spec_characteristic",
-  "price_component",
-  "price_value",
-  "rel_c2c",
-  "rel_c2o",
-  "rel_o2o",
-  "product_specification",
-  "product_offering",
-  // "service",
-];
+// ────────────── HELPERS ──────────────
+function yamlValue(v: any): string {
+  if (v === null) return 'null';
+  if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+  return `'${String(v).replace(/'/g, "''")}'`;
+}
 
-const BATCH_SIZE = 50;
+function rowKey(row: Row, pk: TablePK): string {
+  return pk.map(c => String(row[c])).join('|');
+}
 
-// --- Helpers ---
-function formatYAMLValue(value: any, dataType: string): string {
-  if (value === null) return "null";
-  const numericTypes = [
-    "integer",
-    "bigint",
-    "smallint",
-    "decimal",
-    "numeric",
-    "real",
-    "double precision",
-  ];
-  const booleanTypes = ["boolean"];
-  const dateTypes = ["date"];
-  const timestampTypes = [
-    "timestamp without time zone",
-    "timestamp with time zone",
-  ];
+function whereClause(row: Row, pk: TablePK): string {
+  return pk.map(c => `${c} = ${yamlValue(row[c])}`).join(' AND ');
+}
 
-  if (numericTypes.includes(dataType)) return value.toString();
-  if (booleanTypes.includes(dataType)) return value ? "true" : "false";
-  if (dateTypes.includes(dataType)) return `'${value}'`; // value is string
-  if (timestampTypes.includes(dataType)) {
-    const dt = value instanceof Date ? value : new Date(value);
-    const pad = (n: number) => n.toString().padStart(2, "0");
-    return (
-      `'${dt.getUTCFullYear()}-${pad(dt.getUTCMonth() + 1)}-${pad(
-        dt.getUTCDate()
-      )} ` +
-      `${pad(dt.getUTCHours())}:${pad(dt.getUTCMinutes())}:${pad(
-        dt.getUTCSeconds()
-      )}'`
+// ────────────── DB METADATA LOADERS ──────────────
+async function loadTables(client: Client): Promise<string[]> {
+  const res = await client.query(`
+    SELECT table_name
+    FROM information_schema.tables
+    WHERE table_schema='public' AND table_type='BASE TABLE'
+  `);
+
+  return res.rows
+    .map(r => r.table_name.toLowerCase())
+    .filter(t =>
+      !INTERNAL_TABLES.includes(t) &&
+      (ALLOWED_TABLES.size === 0 || ALLOWED_TABLES.has(t))
     );
+}
+
+async function loadPKs(client: Client): Promise<Map<string, TablePK>> {
+  const res = await client.query(`
+    SELECT tc.table_name, kcu.column_name
+    FROM information_schema.table_constraints tc
+    JOIN information_schema.key_column_usage kcu
+      ON tc.constraint_name = kcu.constraint_name
+    WHERE tc.constraint_type='PRIMARY KEY'
+      AND tc.table_schema='public'
+    ORDER BY kcu.ordinal_position
+  `);
+
+  const map = new Map<string, string[]>();
+  res.rows.forEach(r => {
+    const t = r.table_name.toLowerCase();
+    if (!map.has(t)) map.set(t, []);
+    map.get(t)!.push(r.column_name.toLowerCase());
+  });
+  return map;
+}
+
+async function loadFKs(client: Client): Promise<FK[]> {
+  const res = await client.query(`
+    SELECT tc.table_name AS child,
+           ccu.table_name AS parent
+    FROM information_schema.table_constraints tc
+    JOIN information_schema.constraint_column_usage ccu
+      ON tc.constraint_name = ccu.constraint_name
+    WHERE tc.constraint_type='FOREIGN KEY' AND tc.table_schema='public'
+  `);
+
+  return res.rows
+    .map(r => ({
+      childTable: r.child.toLowerCase(),
+      parentTable: r.parent.toLowerCase()
+    }))
+    .filter(fk => ALLOWED_TABLES.size === 0 || ALLOWED_TABLES.has(fk.childTable));
+}
+
+// ────────────── FK-SAFE TOPO SORT ──────────────
+function topoSortTables(tables: string[], fks: FK[]): string[] {
+  const graph = new Map<string, Set<string>>();
+  tables.forEach(t => graph.set(t, new Set()));
+
+  fks.forEach(fk => {
+    graph.get(fk.childTable)?.add(fk.parentTable);
+  });
+
+  const visited = new Set<string>();
+  const visiting = new Set<string>();
+  const result: string[] = [];
+
+  function visit(t: string) {
+    if (visiting.has(t)) throw new Error(`FK cycle detected: ${t}`);
+    if (!visited.has(t)) {
+      visiting.add(t);
+      graph.get(t)!.forEach(visit);
+      visiting.delete(t);
+      visited.add(t);
+      result.push(t);
+    }
   }
-  return `'${String(value).replace(/'/g, "''")}'`;
+
+  tables.forEach(visit);
+  return result;
 }
 
-function normalizeValue(value: any, dataType: string): any {
-  if (value === null) return null;
-  const numericTypes = [
-    "integer",
-    "bigint",
-    "smallint",
-    "decimal",
-    "numeric",
-    "real",
-    "double precision",
-  ];
-  const booleanTypes = ["boolean"];
-  const dateTypes = ["date"];
-  const timestampTypes = [
-    "timestamp without time zone",
-    "timestamp with time zone",
-  ];
-
-  if (numericTypes.includes(dataType)) return Number(value);
-  if (booleanTypes.includes(dataType)) return Boolean(value);
-  if (dateTypes.includes(dataType)) return value.toString();
-  if (timestampTypes.includes(dataType))
-    return value instanceof Date ? value.getTime() : new Date(value).getTime();
-  return value.toString();
-}
-
-function valuesAreEqual(a: any, b: any, dataType: string): boolean {
-  return normalizeValue(a, dataType) === normalizeValue(b, dataType);
-}
-
-function pkToString(row: Row, pkColumns: string[]): string {
-  return pkColumns.map((c) => row[c]).join("|");
-}
-
-// --- DB metadata ---
-async function getPrimaryKeyColumns(
-  client: Client,
-  table: string
-): Promise<string[]> {
-  const res = await client.query(
-    `
-    SELECT a.attname as column_name
-    FROM pg_index i
-    JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
-    WHERE i.indrelid = $1::regclass AND i.indisprimary
-  `,
-    [table]
-  );
-  return res.rows.map((r: any) => r.column_name);
-}
-
-async function getColumnInfo(
-  client: Client,
-  table: string
-): Promise<ColumnInfo[]> {
-  const res = await client.query(
-    `
-    SELECT column_name, data_type
+// ────────────── GENERATE NEW TABLE CHANGELOG ──────────────
+async function generateNewTableChangeLog(table: string, pk: TablePK, ref: Client): Promise<TableDiff> {
+  const colRes = await ref.query(`
+    SELECT column_name, data_type, is_nullable
     FROM information_schema.columns
-    WHERE table_name = $1
-  `,
-    [table]
-  );
-  return res.rows.map((r: any) => ({
+    WHERE table_name='${table}'
+    ORDER BY ordinal_position
+  `);
+
+  const columns = colRes.rows.map(r => ({
     name: r.column_name,
-    data_type: r.data_type,
+    type: r.data_type,
+    nullable: r.is_nullable === 'YES'
   }));
-}
 
-async function getSerialColumns(
-  client: Client,
-  table: string
-): Promise<{ column_name: string; column_default: string }[]> {
-  const res = await client.query(
-    `
-    SELECT column_name, column_default
-    FROM information_schema.columns
-    WHERE table_name = $1 AND column_default LIKE 'nextval(%'
-  `,
-    [table]
-  );
-  return res.rows;
-}
-
-// --- YAML generation ---
-function generateSequenceYAML(
-  table: string,
-  column: string,
-  sequenceName: string,
-  maxValue: number
-): string {
-  return `- changeSet:
-    id: ${table}-sequence-${column}-${Date.now()}
-    author: auto-generated
-    preConditions:
-      onFail: MARK_RAN
-    changes:
-      - sql:
-          sql: SELECT setval('${sequenceName}', ${maxValue + 1}, false);`;
-}
-
-function generateDeleteYAML(
-  table: string,
-  row: Row,
-  pkColumns: string[]
-): string {
-  const pkCondition = pkColumns.map((c) => `${c} = ${row[c]}`).join(" AND ");
-  return `- changeSet:
-    id: ${table}-delete-${pkToString(row, pkColumns)}-${Date.now()}
-    author: auto-generated
-    preConditions:
-      onFail: MARK_RAN
-      sqlCheck:
-        expectedResult: 1
-        sql: SELECT COUNT(*) FROM ${table} WHERE ${pkCondition}
-    changes:
-      - delete:
-          tableName: ${table}
-          where: ${pkCondition}`;
-}
-
-function generateBatchedInsertYAML(
-  table: string,
-  rows: Row[],
-  columns: ColumnInfo[]
-): string[] {
   const lines: string[] = [];
-  for (let i = 0; i < rows.length; i += BATCH_SIZE) {
-    const batch = rows.slice(i, i + BATCH_SIZE);
-    let columnsYaml = "";
-    batch.forEach((row) => {
-      columns.forEach((col) => {
-        columnsYaml += `            - column:\n                name: ${
-          col.name
-        }\n                value: ${formatYAMLValue(
-          row[col.name],
-          col.data_type
-        )}\n`;
-      });
-    });
-    lines.push(`- changeSet:
-    id: ${table}-insert-batch-${i}-${Date.now()}
-    author: auto-generated
-    preConditions:
-      onFail: MARK_RAN
+
+  // createTable
+  lines.push(`
+- changeSet:
+    id: ${table}-create
+    author: auto
+    changes:
+      - createTable:
+          tableName: ${table}
+          columns:
+${columns.map(c =>
+  `            - column:\n                name: ${c.name}\n                type: ${c.type}${c.nullable ? '' : '\n                constraints:\n                  nullable: false'}`
+).join('\n')}`);
+
+  // primary key
+  if (pk.length > 0) {
+    lines.push(`
+      - addPrimaryKey:
+          tableName: ${table}
+          columnNames: ${pk.join(', ')}`);
+  }
+
+  // row inserts
+  const refRows: Row[] = (await ref.query(`SELECT * FROM ${table}`)).rows;
+  refRows.forEach(r => {
+    lines.push(`
+- changeSet:
+    id: ${table}-insert-${rowKey(r, pk)}
+    author: auto
     changes:
       - insert:
           tableName: ${table}
           columns:
-${columnsYaml}`);
-  }
-  return lines;
+${Object.entries(r).map(([c, v]) =>
+  `            - column:\n                name: ${c}\n                value: ${yamlValue(v)}`
+).join('\n')}`);
+  });
+
+  return { table, yaml: `databaseChangeLog:\n${lines.join('\n')}`.trim() + '\n' };
 }
 
-function generateBatchedUpdateYAML(
-  table: string,
-  updates: UpdateRow[],
-  pkColumns: string[],
-  columns: ColumnInfo[]
-): string[] {
+// ────────────── GENERATE TABLE DIFF ──────────────
+async function generateTableDiff(table: string, pk: TablePK, ref: Client, tgt: Client): Promise<TableDiff | null> {
+  if (!pk || pk.length === 0) {
+    console.warn(`⚠️ Table "${table}" has no primary key. Skipping.`);
+    return null;
+  }
+
+  const refRows: Row[] = (await ref.query(`SELECT * FROM ${table}`)).rows;
+  let tgtRows: Row[] = [];
+  try { tgtRows = (await tgt.query(`SELECT * FROM ${table}`)).rows; } catch {}
+  
+  const refMap = new Map(refRows.map(r => [rowKey(r, pk), r]));
+  const tgtMap = new Map(tgtRows.map(r => [rowKey(r, pk), r]));
+
+  const inserts = refRows.filter(r => !tgtMap.has(rowKey(r, pk)));
+  const deletes = tgtRows.filter(r => !refMap.has(rowKey(r, pk)));
+  const updates = refRows.filter(r => {
+    const t = tgtMap.get(rowKey(r, pk));
+    return t && Object.keys(r).some(c => String(r[c]) !== String(t[c]));
+  });
+
+  if (!inserts.length && !updates.length && !deletes.length) return null;
+
   const lines: string[] = [];
-  updates.forEach((u) => {
-    let columnsYaml = "";
-    columns.forEach((col) => {
-      if (
-        !valuesAreEqual(
-          u.refRow[col.name],
-          u.targetRow[col.name],
-          col.data_type
-        )
-      ) {
-        columnsYaml += `            - column:\n                name: ${
-          col.name
-        }\n                value: ${formatYAMLValue(
-          u.refRow[col.name],
-          col.data_type
-        )}\n`;
-      }
-    });
-    if (columnsYaml) {
-      const pkCondition = pkColumns
-        .map((c) => `${c} = ${u.refRow[c]}`)
-        .join(" AND ");
-      lines.push(`- changeSet:
-    id: ${table}-update-${pkToString(u.refRow, pkColumns)}-${Date.now()}
-    author: auto-generated
-    preConditions:
-      onFail: MARK_RAN
-      sqlCheck:
-        expectedResult: 1
-        sql: SELECT COUNT(*) FROM ${table} WHERE ${pkCondition}
+  for (const r of inserts) lines.push(`
+- changeSet:
+    id: ${table}-insert-${rowKey(r, pk)}
+    author: auto
+    changes:
+      - insert:
+          tableName: ${table}
+          columns:
+${Object.entries(r).map(([c, v]) =>
+  `            - column:\n                name: ${c}\n                value: ${yamlValue(v)}`
+).join('\n')}`);
+  
+  for (const r of updates) {
+    const t = tgtMap.get(rowKey(r, pk))!;
+    const changed = Object.entries(r).filter(([c, v]) => String(v) !== String(t[c]));
+    lines.push(`
+- changeSet:
+    id: ${table}-update-${rowKey(r, pk)}
+    author: auto
     changes:
       - update:
           tableName: ${table}
           columns:
-${columnsYaml}          where: ${pkCondition}`);
-    }
-  });
-  return lines;
-}
-
-// --- Main generation ---
-async function generateDiffPerTable() {
-  const refClient = new Client(refDbConfig);
-  const targetClient = new Client(targetDbConfig);
-
-  await refClient.connect();
-  await targetClient.connect();
-
-  const masterIncludes: string[] = [];
-
-  for (const tableName of tables) {
-    log(`Processing table: ${tableName}`);
-    const pkColumns = await getPrimaryKeyColumns(refClient, tableName);
-    if (pkColumns.length === 0) continue;
-
-    const columns = await getColumnInfo(refClient, tableName);
-    const serialCols = await getSerialColumns(refClient, tableName);
-
-    const refRes = await refClient.query(`SELECT * FROM ${tableName}`);
-    const targetRes = await targetClient.query(`SELECT * FROM ${tableName}`);
-
-    const refMap = new Map<string, Row>(
-      refRes.rows.map((r) => [pkToString(r, pkColumns), r])
-    );
-    const targetMap = new Map<string, Row>(
-      targetRes.rows.map((r) => [pkToString(r, pkColumns), r])
-    );
-
-    const yamlLines: string[] = [];
-
-    // INSERT
-    const missingRows = [...refMap.entries()]
-      .filter(([k]) => !targetMap.has(k))
-      .map(([_, r]) => r);
-    if (missingRows.length > 0)
-      yamlLines.push(
-        ...generateBatchedInsertYAML(tableName, missingRows, columns)
-      );
-
-    // UPDATE
-    const updateRows: UpdateRow[] = [];
-    for (const [key, targetRow] of targetMap.entries()) {
-      if (refMap.has(key)) {
-        const refRow = refMap.get(key)!;
-        if (
-          columns.some(
-            (col) =>
-              !valuesAreEqual(
-                refRow[col.name],
-                targetRow[col.name],
-                col.data_type
-              )
-          )
-        ) {
-          updateRows.push({ refRow, targetRow });
-        }
-      }
-    }
-    if (updateRows.length > 0)
-      yamlLines.push(
-        ...generateBatchedUpdateYAML(tableName, updateRows, pkColumns, columns)
-      );
-
-    // DELETE
-    const deleteRows = [...targetMap.entries()]
-      .filter(([k]) => !refMap.has(k))
-      .map(([_, r]) => r);
-    deleteRows.forEach((r) =>
-      yamlLines.push(generateDeleteYAML(tableName, r, pkColumns))
-    );
-
-    // SEQUENCES
-    serialCols.forEach((col) => {
-      const seqMatch = col.column_default.match(/nextval\('(.+?)'::regclass\)/);
-      if (seqMatch) {
-        const seqName: any = seqMatch[1];
-        const maxValue =
-          refRes.rows.length > 0
-            ? Math.max(...refRes.rows.map((r) => r[col.column_name]))
-            : 0;
-        yamlLines.push(
-          generateSequenceYAML(tableName, col.column_name, seqName, maxValue)
-        );
-      }
-    });
-
-    if (yamlLines.length > 0) {
-      if (!fs.existsSync(directory)) {
-        fs.mkdirSync(directory);
-        log(`Directory ${directory} created!!`);
-      }
-      const fileName = `${directory}/${tableName}-data-diff.yaml`;
-      fs.writeFileSync(
-        fileName,
-        `databaseChangeLog:\n${yamlLines.join("\n")}`,
-        "utf8"
-      );
-      log(`Generated YAML for table: ${fileName}`);
-      masterIncludes.push(fileName);
-    }
+${changed.map(([c, v]) =>
+  `            - column:\n                name: ${c}\n                value: ${yamlValue(v)}`
+).join('\n')}
+          where: ${whereClause(r, pk)}`);
   }
 
-  // Only generate master changelog if there are any table diffs
-  if (masterIncludes.length > 0) {
-    const masterYamlLines: string[] = [
-      "databaseChangeLog:",
-      "  - changeSet:",
-      `      id: disable-fk-${Date.now()}`,
-      "      author: auto-generated",
-      "      changes:",
-      "        - sql:",
-      "            sql: SET session_replication_role = replica;",
-    ];
+  for (const r of deletes) lines.push(`
+- changeSet:
+    id: ${table}-delete-${rowKey(r, pk)}
+    author: auto
+    changes:
+      - delete:
+          tableName: ${table}
+          where: ${whereClause(r, pk)}`);
 
-    masterIncludes.forEach((f) => {
-      masterYamlLines.push(`  - include:\n      file: ${f}`);
-    });
-
-    masterYamlLines.push(
-      "  - changeSet:",
-      `      id: enable-fk-${Date.now()}`,
-      "      author: auto-generated",
-      "      changes:",
-      "        - sql:",
-      "            sql: SET session_replication_role = DEFAULT;"
-    );
-
-    fs.writeFileSync(
-      `${directory}/master-changelog.yaml`,
-      masterYamlLines.join("\n"),
-      "utf8"
-    );
-    log("Generated master-changelog.yaml");
-    if (output) {
-        fs.appendFileSync(output, `diffPath=${timeStamp}\n`);
-    }
-  } else {
-    log("No differences found; master-changelog.yaml not created.");
-  }
-
-  await refClient.end();
-  await targetClient.end();
+  return { table, yaml: `databaseChangeLog:\n${lines.join('\n')}`.trim() + '\n' };
 }
 
-// Run
-generateDiffPerTable();
+// ────────────── MAIN ──────────────
+async function run() {
+  const ref = new Client(refDbConfig);
+  const tgt = new Client(targetDbConfig);
+  await ref.connect();
+  await tgt.connect();
+
+  const refTables = await loadTables(ref);
+  const targetTables = await loadTables(tgt);
+  const pkMap = await loadPKs(ref);
+  const fks = await loadFKs(ref);
+
+  const existingTables = refTables.filter(t => targetTables.includes(t));
+  const newTables = refTables.filter(t => !targetTables.includes(t));
+
+  const orderedTables = topoSortTables(existingTables, fks);
+  console.log('✅ FK-safe table order:', orderedTables.join(', '));
+
+  const diffs: TableDiff[] = [];
+
+  // existing table diffs
+  for (const t of orderedTables) {
+    const pk = pkMap.get(t);
+    const diff = await generateTableDiff(t, pk!, ref, tgt);
+    if (diff) diffs.push(diff);
+  }
+
+  // new tables: create table + insert rows
+  for (const t of newTables) {
+    const pk = pkMap.get(t) || [];
+    const diff = await generateNewTableChangeLog(t, pk, ref);
+    diffs.push(diff);
+  }
+
+  if (!diffs.length) {
+    console.log('✅ No changes detected. Nothing generated.');
+    await ref.end();
+    await tgt.end();
+    return;
+  }
+
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  for (const d of diffs) fs.writeFileSync(path.join(OUTPUT_DIR, `${d.table}-data.yaml`), d.yaml);
+
+  const master = [
+    'databaseChangeLog:',
+    ...diffs.map(d => `  - include:\n      file: data-diffs/${d.table}-data.yaml`)
+  ].join('\n');
+
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'master-changelog.yaml'), master);
+
+  await ref.end();
+  await tgt.end();
+  console.log('✅ Master changelog generated.');
+}
+
+run().catch(err => {
+  console.error('❌ Error:', err.message);
+  process.exit(1);
+});
