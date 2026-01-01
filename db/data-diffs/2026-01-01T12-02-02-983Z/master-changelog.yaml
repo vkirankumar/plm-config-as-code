@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: data-diffs/catalog-data.yaml
+  - include:
+      file: data-diffs/offering_category-data.yaml

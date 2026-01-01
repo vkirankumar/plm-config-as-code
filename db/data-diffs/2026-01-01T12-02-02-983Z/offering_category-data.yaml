@@ -1,0 +1,24 @@
+databaseChangeLog:
+
+- changeSet:
+    id: offering_category-insert-9
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '9'
+            - column:
+                name: catalog_id
+                value: '2'
+            - column:
+                name: code
+                value: 'FWA'
+            - column:
+                name: name
+                value: 'FWA Internet Services'
+            - column:
+                name: display_order
+                value: 2
