@@ -372,7 +372,7 @@ async function run() {
 
   fs.writeFileSync(path.join(OUTPUT_DIR, "master-changelog.yaml"), master);
   if (output) {
-      fs.appendFileSync(output, `diffPath=${timeStamp}\n`);
+    fs.appendFileSync(output, `diffPath=${timeStamp}\n`);
   }
   await ref.end();
   await tgt.end();

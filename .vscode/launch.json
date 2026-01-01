@@ -17,7 +17,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\compare.ts",
+            "program": "${workspaceFolder}\\src\\sync.ts",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]
