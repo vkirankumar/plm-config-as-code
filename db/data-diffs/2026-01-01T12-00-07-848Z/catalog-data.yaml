@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+- changeSet:
+    id: catalog-update-5
+    author: auto
+    changes:
+      - update:
+          tableName: catalog
+          columns:
+            - column:
+                name: code
+                value: 'Update Code'
+          where: catalog_id = '5'
