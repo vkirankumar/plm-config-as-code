@@ -48,7 +48,7 @@ jobs:
       - name: List open PRs from branches starting with 'auto-pr'
         id: list_prs
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Fetching PRs from branches starting with 'auto-pr'"
           PRS=$(gh pr list --state open --json number,headRefName --jq '.[] | select(.headRefName | startswith("auto-pr")) | .number')
@@ -64,7 +64,7 @@ jobs:
       - name: Close PRs
         if: env.PRS_TO_CLOSE != ''
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           for PR in $PRS_TO_CLOSE; do
             BRANCH=$(gh pr view $PR --json headRefName --jq '.headRefName')
