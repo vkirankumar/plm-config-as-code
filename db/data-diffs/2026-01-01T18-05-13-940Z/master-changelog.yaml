@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: ./db/data-diffs/2026-01-01T18-05-13-940Z/catalog-data.yaml
+  - include:
+      file: ./db/data-diffs/2026-01-01T18-05-13-940Z/offering_category-data.yaml
+  - include:
+      file: ./db/data-diffs/2026-01-01T18-05-13-940Z/price_component-data.yaml

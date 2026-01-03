@@ -1,0 +1,29 @@
+databaseChangeLog:
+
+- changeSet:
+    id: catalog-insert-7
+    author: auto
+    changes:
+      - insert:
+          tableName: catalog
+          columns:
+            - column:
+                name: catalog_id
+                value: '7'
+            - column:
+                name: code
+                value: 'Google Catalogue'
+            - column:
+                name: name
+                value: 'GCC'
+            - column:
+                name: test
+                value: '1                                                                                                                                                                                                       '
+
+- changeSet:
+    id: catalog-delete-5
+    author: auto
+    changes:
+      - delete:
+          tableName: catalog
+          where: catalog_id = '5'
