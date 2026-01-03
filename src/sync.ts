@@ -12,6 +12,7 @@ type Row = Record<string, any>;
 type TablePK = string[];
 type FK = { childTable: string; parentTable: string };
 type TableDiff = { table: string; yaml: string };
+const output = process.env.GITHUB_OUTPUT;
 
 configDotenv();
 
@@ -33,8 +34,6 @@ const targetDbConfig = {
   password: process.env.DB_PASSWORD,
   ssl: { rejectUnauthorized: false },
 };
-
-const output = process.env.GITHUB_OUTPUT;
 
 // Only these tables will be included. Empty = all tables.
 const ALLOWED_TABLES = new Set<string>([
@@ -374,7 +373,7 @@ async function run() {
       (d) => `  - include:\n      file: ${OUTPUT_DIR}/${d.table}-data.yaml`
     ),
   ].join("\n");
-  
+  await generateDBSnapshot();
   fs.writeFileSync(path.join(OUTPUT_DIR, "master-changelog.yaml"), master);
   if (output) {
     fs.appendFileSync(output, `diffPath=${timeStamp}\n`);
