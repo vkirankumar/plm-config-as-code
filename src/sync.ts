@@ -1,7 +1,9 @@
 import { Client, types } from "pg";
 import * as fs from "fs";
 import * as path from "path";
-import { configDotenv } from 'dotenv';
+import { configDotenv } from "dotenv";
+import { Liquibase, POSTGRESQL_DEFAULT_CONFIG } from "liquibase";
+import { error } from "console";
 
 types.setTypeParser(1082, (val: string) => val); // DATE
 
@@ -20,7 +22,7 @@ const refDbConfig = {
   database: process.env.DB_REFERENCE,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
 };
 
 const targetDbConfig = {
@@ -29,7 +31,7 @@ const targetDbConfig = {
   database: process.env.DB_TARGET,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
 };
 
 const output = process.env.GITHUB_OUTPUT;
@@ -51,7 +53,7 @@ const ALLOWED_TABLES = new Set<string>([
 ]);
 
 const timeStamp: string = new Date().toISOString().replace(/[:.&]/g, "-");
-const OUTPUT_DIR = `./db/diff/${timeStamp}`;
+const OUTPUT_DIR = `./db/diff/${timeStamp}/data`;
 const INTERNAL_TABLES = ["databasechangelog", "databasechangeloglock"];
 
 // ────────────── HELPERS ──────────────
@@ -379,6 +381,7 @@ async function run() {
   }
   await ref.end();
   await tgt.end();
+  await generateDBSnapshot();
   console.log("✅ Master changelog generated.");
 }
 
@@ -386,3 +389,23 @@ run().catch((err) => {
   console.error("❌ Error:", err.message);
   process.exit(1);
 });
+
+const generateDBSnapshot = async () => {
+  try {
+    const diffTypes: string =
+      "data,table,column,primaryKey,index,foreignKey,uniqueConstraint";
+    const config_dev = {
+      ...POSTGRESQL_DEFAULT_CONFIG,
+      password: process.env.DB_PASSWORD ?? "",
+      username: process.env.DB_USERNAME ?? "",
+      url: `jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET}`,
+    };
+    const liquibase: Liquibase = new Liquibase(config_dev);
+    liquibase.generateChangeLog({
+      diffTypes,
+      changelogFile: `./db/diff/${timeStamp}/snapshot.yaml`,
+    });
+  } catch (err) {
+    error("Failed to create target snapshot!! " + err);
+  }
+};
