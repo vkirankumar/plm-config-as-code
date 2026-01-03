@@ -374,15 +374,14 @@ async function run() {
       (d) => `  - include:\n      file: ${OUTPUT_DIR}/${d.table}-data.yaml`
     ),
   ].join("\n");
-
+  await generateDBSnapshot();
   fs.writeFileSync(path.join(OUTPUT_DIR, "master-changelog.yaml"), master);
   if (output) {
     fs.appendFileSync(output, `diffPath=${timeStamp}\n`);
   }
   await ref.end();
   await tgt.end();
-  await generateDBSnapshot();
-  console.log("✅ Master changelog generated.");
+  console.log("✅ Master changelog and snapshot generated.");
 }
 
 run().catch((err) => {
