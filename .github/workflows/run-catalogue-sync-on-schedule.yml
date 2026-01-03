@@ -31,7 +31,7 @@ jobs:
           cache: 'npm'
 
       - name: Print secret (simulated use)
-        run: echo "Using API key: ${{ secrets.DB_PASSWORD }}"
+        run: echo Using API key = ${{ secrets.DB_PASSWORD }}
 
       # - name: Install dependencies
       #   run: npm install
