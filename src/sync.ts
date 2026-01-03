@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { configDotenv } from "dotenv";
 import { Liquibase, POSTGRESQL_DEFAULT_CONFIG } from "liquibase";
-import { error } from "console";
+import { error, log } from "console";
 
 types.setTypeParser(1082, (val: string) => val); // DATE
 
@@ -13,9 +13,10 @@ type TablePK = string[];
 type FK = { childTable: string; parentTable: string };
 type TableDiff = { table: string; yaml: string };
 const output = process.env.GITHUB_OUTPUT;
-
+log(output);
+log("After");
 configDotenv();
-
+log(output);
 // ────────────── CONFIG ──────────────
 const refDbConfig = {
   host: process.env.DB_HOST,
