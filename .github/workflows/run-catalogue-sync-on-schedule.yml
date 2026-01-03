@@ -45,7 +45,7 @@ jobs:
           DB_TARGET: ${{ secrets.DB_HOST }}
           DB_REFERENCE: ${{ secrets.DB_HOST }}
         # run: npm run sync:prod
-        run: npm start:prod
+        run: npm run start:prod
 
       # - name: Check DB diff
       #   run: echo Data diff generated in directory = ${{ steps.transform.outputs.diffPath }}
