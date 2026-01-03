@@ -6,6 +6,11 @@ import {
 import fs from 'fs';
 import { configDotenv } from 'dotenv';
 
+enum LQ_OPS {
+    SCHEMA_DIFF = 'schema-diff',
+    DB_SNAPSHOT = 'snapshot',
+}
+
 const args = process.argv.slice(2);
 configDotenv();
 const output = process.env.GITHUB_OUTPUT;
@@ -38,11 +43,20 @@ const timeStamp: string  = new Date().toISOString().replace(/[:.&]/g, "-");
 const init = async () => {
     log("Hello Liquibase!!!");
     try {
+        switch(args[0]) {
+            case LQ_OPS.DB_SNAPSHOT:
+                    generateChangeLog();
+                break;
+            case LQ_OPS.SCHEMA_DIFF:
+                    schemaDiffChangeLog();
+                break;
+            default:
+                log("Completed!!");
+        }
         // generateChangeLog();
         // diff();
         // await update();
         // await diffChangeLog();
-        log("Completed!!");
     } catch (error) {
         log("Failed with error " + error);
     }
@@ -59,21 +73,21 @@ const generateChangeLog = (): void => {
              changelogFile: `./db/master/changelog-master-${timeStamp}.yaml`});
 }
 
-const diff = async () => {
-    const config = {
-        ...POSTGRESQL_DEFAULT_CONFIG,
-        password: 'postgres',
-        url: 'jdbc:postgresql://localhost:4001/prod',
-        referenceUrl: 'jdbc:postgresql://localhost:4001/dev',
-        referenceUsername: 'postgres',
-        referencePassword: 'postgres',
-        schemas: 'public',
-        referenceSchemas: 'public'
-    };
-    const liquibase: Liquibase = new Liquibase(config);
-    const diff: string = await liquibase.diff({diffTypes});
-    log(diff);
-}
+// const schema_diff = async () => {
+//     const config = {
+//         ...POSTGRESQL_DEFAULT_CONFIG,
+//         password: 'postgres',
+//         url: 'jdbc:postgresql://localhost:4001/prod',
+//         referenceUrl: 'jdbc:postgresql://localhost:4001/dev',
+//         referenceUsername: 'postgres',
+//         referencePassword: 'postgres',
+//         schemas: 'public',
+//         referenceSchemas: 'public'
+//     };
+//     const liquibase: Liquibase = new Liquibase(config);
+//     const diff: string = await liquibase.diff({diffTypes});
+//     log(diff);
+// }
 
 const update = (): void => {
     const config = {
@@ -99,7 +113,7 @@ const update = (): void => {
 //     liquibase.update({});
 // }
 
-const diffChangeLog = async () => {
+const schemaDiffChangeLog = async () => {
     const fileName = `changelog-diff-${timeStamp}.yaml`;
     const config = {
         ...POSTGRESQL_DEFAULT_CONFIG,

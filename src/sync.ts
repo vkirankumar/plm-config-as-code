@@ -13,8 +13,6 @@ type TableDiff = { table: string; yaml: string };
 
 configDotenv();
 
-console.log(`${process.env.DB_USERNAME?.length}`);
-
 // ────────────── CONFIG ──────────────
 const refDbConfig = {
   host: process.env.DB_HOST,
@@ -53,7 +51,7 @@ const ALLOWED_TABLES = new Set<string>([
 ]);
 
 const timeStamp: string = new Date().toISOString().replace(/[:.&]/g, "-");
-const OUTPUT_DIR = `./db/data-diffs/${timeStamp}`;
+const OUTPUT_DIR = `./db/diff/${timeStamp}`;
 const INTERNAL_TABLES = ["databasechangelog", "databasechangeloglock"];
 
 // ────────────── HELPERS ──────────────
