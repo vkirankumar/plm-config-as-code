@@ -13,6 +13,8 @@ type TableDiff = { table: string; yaml: string };
 
 configDotenv();
 
+console.log(`1234${process.env.DB_PASSWORD}345556jjk`);
+
 // ────────────── CONFIG ──────────────
 const refDbConfig = {
   host: process.env.DB_HOST,
