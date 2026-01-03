@@ -30,9 +30,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Print secret (simulated use)
-        run: echo "Using API key: ${{ secrets.MY_API_KEY }}"
-
       - name: Install dependencies
         run: npm install
 
