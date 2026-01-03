@@ -1,7 +1,7 @@
 import { Client, types } from "pg";
 import * as fs from "fs";
 import * as path from "path";
-// import { configDotenv } from "dotenv";
+import { configDotenv } from "dotenv";
 import { Liquibase, POSTGRESQL_DEFAULT_CONFIG } from "liquibase";
 import { error, log } from "console";
 
@@ -13,7 +13,7 @@ type TablePK = string[];
 type FK = { childTable: string; parentTable: string };
 type TableDiff = { table: string; yaml: string };
 const output = process.env.GITHUB_OUTPUT;
-
+configDotenv();
 // ────────────── CONFIG ──────────────
 const refDbConfig = {
   host: process.env.DB_HOST,
