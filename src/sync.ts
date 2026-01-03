@@ -13,7 +13,7 @@ type TableDiff = { table: string; yaml: string };
 
 configDotenv();
 
-console.log(`${process.env.DB_PASSWORD?.length}`);
+console.log(`${process.env.DB_USERNAME?.length}`);
 
 // ────────────── CONFIG ──────────────
 const refDbConfig = {
