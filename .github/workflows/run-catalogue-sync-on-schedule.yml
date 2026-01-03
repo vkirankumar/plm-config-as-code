@@ -38,12 +38,12 @@ jobs:
 
       - name: Transform 
         env:
-          DB_HOST:${{ secrets.DB_HOST }}
-          PORT:${{ secrets.PORT }}
-          DB_USERNAME:${{ secrets.DB_HOST }}
-          DB_PASSWORD:${{ secrets.DB_HOST }}
-          DB_TARGET:${{ secrets.DB_HOST }}
-          DB_REFERENCE:${{ secrets.DB_HOST }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          PORT: ${{ secrets.PORT }}
+          DB_USERNAME: ${{ secrets.DB_HOST }}
+          DB_PASSWORD: ${{ secrets.DB_HOST }}
+          DB_TARGET: ${{ secrets.DB_HOST }}
+          DB_REFERENCE: ${{ secrets.DB_HOST }}
         # run: npm run sync:prod
         run: npm start
 

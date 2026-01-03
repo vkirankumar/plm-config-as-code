@@ -24,15 +24,19 @@ const init = async () => {
 };
 
 const update = async (changeDirectoryName: string) => {
-  const config = {
-    ...POSTGRESQL_DEFAULT_CONFIG,
-    password: process.env.DB_PASSWORD ?? '',
-    username: process.env.DB_USERNAME ?? '',
-    url: `jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET}`,
-    changeLogFile: `./db/data-diffs/${changeDirectoryName}/master-changelog.yaml`,
-  };
-  const liquibase: Liquibase = new Liquibase(config);
-  await liquibase.update({});
+    try {
+        const config = {
+            ...POSTGRESQL_DEFAULT_CONFIG,
+            password: process.env.DB_PASSWORD ?? '',
+            username: process.env.DB_USERNAME ?? '',
+            url: `jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET}`,
+            changeLogFile: `./db/data-diffs/${changeDirectoryName}/master-changelog.yaml`,
+        };
+        const liquibase: Liquibase = new Liquibase(config);
+        await liquibase.update({});
+    } catch (error) {
+        log("Failed with error " + error);
+    }
 };
 
 const getDirectoryName = () => {
