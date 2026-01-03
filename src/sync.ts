@@ -4,7 +4,6 @@ import * as path from "path";
 // import { configDotenv } from "dotenv";
 import { Liquibase, POSTGRESQL_DEFAULT_CONFIG } from "liquibase";
 import { error, log } from "console";
-import { DB_HOST, DB_PASSWORD, DB_REFERENCE, DB_TARGET, DB_USERNAME, PORT } from "./util/constants.js";
 
 types.setTypeParser(1082, (val: string) => val); // DATE
 
@@ -17,20 +16,20 @@ const output = process.env.GITHUB_OUTPUT;
 
 // ────────────── CONFIG ──────────────
 const refDbConfig = {
-  host: DB_HOST,
-  port: PORT,
-  database: DB_REFERENCE,
-  user: DB_USERNAME,
-  password: DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.PORT ? parseInt(process.env.PORT) : 5432,
+  database: process.env.DB_REFERENCE,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
   ssl: { rejectUnauthorized: false },
 };
 
 const targetDbConfig = {
-  host: DB_HOST,
-  port: PORT,
-  database: DB_TARGET,
-  user: DB_USERNAME,
-  password: DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.PORT ? parseInt(process.env.PORT) : 5432,
+  database: process.env.DB_TARGET,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
   ssl: { rejectUnauthorized: false },
 };
 
@@ -393,12 +392,12 @@ const generateDBSnapshot = async () => {
       "data,table,column,primaryKey,index,foreignKey,uniqueConstraint";
     const config_dev = {
       ...POSTGRESQL_DEFAULT_CONFIG,
-      password: DB_PASSWORD ?? "",
-      username: DB_USERNAME ?? "",
-      url: `jdbc:postgresql://${DB_HOST}:${PORT}/${DB_TARGET}`,
+      password: process.env.DB_PASSWORD ?? "",
+      username: process.env.DB_USERNAME ?? "",
+      url: `jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET}`,
     };
     const liquibase: Liquibase = new Liquibase(config_dev);
-    liquibase.generateChangeLog({
+    await liquibase.generateChangeLog({
       diffTypes,
       changelogFile: `./db/diff/${timeStamp}/snapshot.yaml`,
     });
