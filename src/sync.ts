@@ -374,7 +374,7 @@ async function run() {
       (d) => `  - include:\n      file: ${OUTPUT_DIR}/${d.table}-data.yaml`
     ),
   ].join("\n");
-  await generateDBSnapshot();
+  
   fs.writeFileSync(path.join(OUTPUT_DIR, "master-changelog.yaml"), master);
   if (output) {
     fs.appendFileSync(output, `diffPath=${timeStamp}\n`);
