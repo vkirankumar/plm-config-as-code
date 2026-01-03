@@ -37,56 +37,63 @@ jobs:
         run: npm run build
 
       - name: Transform 
-        id: transform
-        run: npm run sync:prod
-
-      - name: Check DB diff
-        run: echo Data diff generated in directory = ${{ steps.transform.outputs.diffPath }}
-
-      - name: List open PRs from branches starting with 'auto-pr'
-        id: list_prs
-        if: ${{ steps.transform.outputs.diffPath != '' && steps.transform.outputs.diffPath != null }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Fetching PRs from branches starting with 'auto-pr'"
-          PRS=$(gh pr list --state open --json number,headRefName --jq '.[] | select(.headRefName | startswith("auto-pr")) | .number')
+          DB_HOST:${{ secrets.DB_HOST }}
+          PORT:${{ secrets.PORT }}
+          DB_USERNAME:${{ secrets.DB_HOST }}
+          DB_PASSWORD:${{ secrets.DB_HOST }}
+          DB_TARGET:${{ secrets.DB_HOST }}
+          DB_REFERENCE:${{ secrets.DB_HOST }}
+        # run: npm run sync:prod
+        run: npm start
+
+      # - name: Check DB diff
+      #   run: echo Data diff generated in directory = ${{ steps.transform.outputs.diffPath }}
+
+      # - name: List open PRs from branches starting with 'auto-pr'
+      #   id: list_prs
+      #   if: ${{ steps.transform.outputs.diffPath != '' && steps.transform.outputs.diffPath != null }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     echo "Fetching PRs from branches starting with 'auto-pr'"
+      #     PRS=$(gh pr list --state open --json number,headRefName --jq '.[] | select(.headRefName | startswith("auto-pr")) | .number')
           
-          if [ -z "$PRS" ]; then
-            echo "No PRs found from auto-pr branches."
-            echo "PRS_TO_CLOSE=" >> $GITHUB_ENV
-          else
-            echo "Found PRs to close: $PRS"
-            echo "PRS_TO_CLOSE=$PRS" >> $GITHUB_ENV
-          fi
+      #     if [ -z "$PRS" ]; then
+      #       echo "No PRs found from auto-pr branches."
+      #       echo "PRS_TO_CLOSE=" >> $GITHUB_ENV
+      #     else
+      #       echo "Found PRs to close: $PRS"
+      #       echo "PRS_TO_CLOSE=$PRS" >> $GITHUB_ENV
+      #     fi
 
-      - name: Close PRs
-        if: ${{env.PRS_TO_CLOSE != '' && steps.transform.outputs.diffPath != '' && steps.transform.outputs.diffPath != null }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          for PR in $PRS_TO_CLOSE; do
-            BRANCH=$(gh pr view $PR --json headRefName --jq '.headRefName')
-            echo "Closing PR #$PR from branch $BRANCH"
-            gh pr close $PR --delete-branch
-          done
+      # - name: Close PRs
+      #   if: ${{env.PRS_TO_CLOSE != '' && steps.transform.outputs.diffPath != '' && steps.transform.outputs.diffPath != null }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     for PR in $PRS_TO_CLOSE; do
+      #       BRANCH=$(gh pr view $PR --json headRefName --jq '.headRefName')
+      #       echo "Closing PR #$PR from branch $BRANCH"
+      #       gh pr close $PR --delete-branch
+      #     done
 
-      - name: Create Pull Request
-        id: cpr
-        if: ${{ steps.transform.outputs.diffPath != '' && steps.transform.outputs.diffPath != null }}
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Sync with reference DB ${{ steps.transform.outputs.diffPath }}
-          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
-          signoff: false
-          branch: 'auto-pr-branch-${{ steps.transform.outputs.diffPath }}'
-          base: main
-          delete-branch: true
-          title: 'PR: PLM catalogue changes'
-          body: |
-            AUTO GENERATED PR:
-            - PLM catalogue changes between design time and runtime catalog.
-          labels: |
-            automated pr
+      # - name: Create Pull Request
+      #   id: cpr
+      #   if: ${{ steps.transform.outputs.diffPath != '' && steps.transform.outputs.diffPath != null }}
+      #   uses: peter-evans/create-pull-request@v8
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     commit-message: Sync with reference DB ${{ steps.transform.outputs.diffPath }}
+      #     committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+      #     author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+      #     signoff: false
+      #     branch: 'auto-pr-branch-${{ steps.transform.outputs.diffPath }}'
+      #     base: main
+      #     delete-branch: true
+      #     title: 'PR: PLM catalogue changes'
+      #     body: |
+      #       AUTO GENERATED PR:
+      #       - PLM catalogue changes between design time and runtime catalog.
+      #     labels: |
+      #       automated pr

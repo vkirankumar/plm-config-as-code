@@ -1,6 +1,7 @@
 import { Client, types } from "pg";
 import * as fs from "fs";
 import * as path from "path";
+import { configDotenv } from 'dotenv';
 
 types.setTypeParser(1082, (val: string) => val); // DATE
 
@@ -10,23 +11,25 @@ type TablePK = string[];
 type FK = { childTable: string; parentTable: string };
 type TableDiff = { table: string; yaml: string };
 
+configDotenv();
+
 // ────────────── CONFIG ──────────────
 const refDbConfig = {
-  host: "ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech",
-  port: 5432,
-  database: "prod",
-  user: "neondb_owner",
-  password: "npg_cweS1VpKl0JL",
-  ssl: { rejectUnauthorized: false },
+  host: process.env.DB_HOST,
+  port: process.env.PORT ? parseInt(process.env.PORT) : 5432,
+  database: process.env.DB_REFERENCE,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  ssl: { rejectUnauthorized: false }
 };
 
 const targetDbConfig = {
-  host: "ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech",
-  port: 5432,
-  database: "dev",
-  user: "neondb_owner",
-  password: "npg_cweS1VpKl0JL",
-  ssl: { rejectUnauthorized: false },
+  host: process.env.DB_HOST,
+  port: process.env.PORT ? parseInt(process.env.PORT) : 5432,
+  database: process.env.DB_TARGET,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  ssl: { rejectUnauthorized: false }
 };
 
 const output = process.env.GITHUB_OUTPUT;

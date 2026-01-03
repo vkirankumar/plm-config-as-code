@@ -4,8 +4,10 @@ import {
     POSTGRESQL_DEFAULT_CONFIG
 } from 'liquibase';
 import fs from 'fs';
+import { configDotenv } from 'dotenv';
 
 const args = process.argv.slice(2);
+configDotenv();
 const output = process.env.GITHUB_OUTPUT;
 
 // const config_dev = {
@@ -21,6 +23,12 @@ const output = process.env.GITHUB_OUTPUT;
 //     url: 'jdbc:postgresql://localhost:4001/prod',
 // };
 
+/**
+ * TODO:
+ * On PR action, get DB snapshot and push into changelog folder in the PR branch.
+ * Update merge action to pick the most recent diff folder or bring from the PR description. 
+ */
+
 const diffTypes: string = "table,column,primaryKey,index,foreignKey,uniqueConstraint";
 // const referenceParam: string = ' --referenceUrl=jdbc:postgresql://localhost:4001/preprod --referenceUsername=postgres referencePassword=postgres';
 // const liquibase_dev: Liquibase = new Liquibase(config_dev);
@@ -30,9 +38,10 @@ const timeStamp: string  = new Date().toISOString().replace(/[:.&]/g, "-");
 const init = async () => {
     log("Hello Liquibase!!!");
     try {
+        log(process.env);
         // generateChangeLog();
         // diff();
-        await update();
+        // await update();
         // await diffChangeLog();
         log("Completed!!");
     } catch (error) {

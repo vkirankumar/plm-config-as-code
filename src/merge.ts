@@ -1,9 +1,11 @@
 import { error, log } from "console";
 import { Liquibase, POSTGRESQL_DEFAULT_CONFIG } from "liquibase";
 import fs, { readdirSync } from "fs";
+import { configDotenv } from 'dotenv';
 
 // const args = process.argv.slice(2);
 const output = process.env.GITHUB_OUTPUT;
+configDotenv();
 
 const init = async () => {
   const changeDirectoryName = getDirectoryName();
@@ -24,9 +26,9 @@ const init = async () => {
 const update = async (changeDirectoryName: string) => {
   const config = {
     ...POSTGRESQL_DEFAULT_CONFIG,
-    password: "npg_cweS1VpKl0JL",
-    username: "neondb_owner",
-    url: "jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/dev",
+    password: process.env.DB_PASSWORD ?? '',
+    username: process.env.DB_USERNAME ?? '',
+    url: `jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET}`,
     changeLogFile: `./db/data-diffs/${changeDirectoryName}/master-changelog.yaml`,
   };
   const liquibase: Liquibase = new Liquibase(config);
