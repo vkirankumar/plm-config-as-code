@@ -38,7 +38,6 @@ const timeStamp: string  = new Date().toISOString().replace(/[:.&]/g, "-");
 const init = async () => {
     log("Hello Liquibase!!!");
     try {
-        log(process.env);
         // generateChangeLog();
         // diff();
         // await update();
