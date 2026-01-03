@@ -34,8 +34,8 @@ const update = async (changeDirectoryName: string) => {
         };
         const liquibase: Liquibase = new Liquibase(config);
         await liquibase.update({});
-    } catch (error) {
-        log("Failed with error " + error);
+    } catch (err) {
+        error("Failed with error " + err);
     }
 };
 
