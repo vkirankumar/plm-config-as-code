@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+- changeSet:
+    id: catalog-insert-5
+    author: auto
+    changes:
+      - insert:
+          tableName: catalog
+          columns:
+            - column:
+                name: catalog_id
+                value: '5'
+            - column:
+                name: code
+                value: 'Catalogue Update'
+            - column:
+                name: name
+                value: 'My Catalog update'
+            - column:
+                name: test
+                value: '1                                                                                                                                                                                                       '
