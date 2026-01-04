@@ -31,7 +31,7 @@ jobs:
           cache: 'npm'
 
       - name: Get PR body
-        run: echo ${{ github.event.pull_request.body }}
+        run: echo Commit Message ${{ github.event.head_commit.message }}
 
       # - name: Install dependencies
       #   run: npm install
