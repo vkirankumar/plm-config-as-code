@@ -30,13 +30,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Get PR body
+        run: echo ${{ github.event.pull_request.body }}
 
-      - name: Build 
-        run: npm run build
+      # - name: Install dependencies
+      #   run: npm install
 
-      - name: Apply data transformation 
-        id: transform
-        run: npm run merge:prod
+      # - name: Build 
+      #   run: npm run build
+
+      # - name: Apply data transformation 
+      #   id: transform
+      #   run: npm run merge:prod
         
