@@ -30,7 +30,7 @@ const update = async (changeDirectoryName: string) => {
             password: process.env.DB_PASSWORD ?? '',
             username: process.env.DB_USERNAME ?? '',
             url: `jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET}`,
-            changeLogFile: `./db/data-diffs/${changeDirectoryName}/master-changelog.yaml`,
+            changeLogFile: `./db/diff/${changeDirectoryName}/data/master-changelog.yaml`,
         };
         const liquibase: Liquibase = new Liquibase(config);
         await liquibase.update({});
