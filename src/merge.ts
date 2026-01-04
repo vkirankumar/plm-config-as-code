@@ -40,15 +40,19 @@ const update = async (changeDirectoryName: string) => {
 };
 
 const getDirectoryName = () => {
-  if (fs.existsSync("./db/data-diffs")) {
-    const directories: string[] = readdirSync("./db/data-diffs");
+  if (fs.existsSync("./db/diff")) {
+    const directories: string[] = readdirSync("./db/diff");
     let isMasterChangeLogFound: boolean = false;
-    if (directories[0]) {
+
+    directories.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+   
+    if (directories.length) {
+
       isMasterChangeLogFound = readdirSync(
-        `./db/data-diffs/${directories[0]}`
+        `./db/diff/${directories[directories.length - 1]}/data`
       ).includes("master-changelog.yaml");
     }
-    return isMasterChangeLogFound ? directories[0] : null;
+    return isMasterChangeLogFound ? directories[directories.length - 1] : null;
   }
   return null;
 };

@@ -1,3 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: ./db/diff/2026-01-04T14-35-03-570Z/data/catalog-data.yaml
