@@ -40,7 +40,7 @@ const init = async () => {
     try {
         // generateChangeLog();
         // diff();
-        // await update();
+        await update();
         // await diffChangeLog();
         log("Completed!!");
     } catch (error) {
@@ -51,12 +51,13 @@ const init = async () => {
 const generateChangeLog = (): void => {
     const config_dev = {
         ...POSTGRESQL_DEFAULT_CONFIG,
-        password: 'postgres',
-        url: 'jdbc:postgresql://localhost:4001/postgres',
+        password: 'npg_cweS1VpKl0JL',
+        username: 'neondb_owner',
+        url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/dev',
     };
     const liquibase: Liquibase = new Liquibase(config_dev);
     liquibase.generateChangeLog({diffTypes,
-             changelogFile: `./db/master/changelog-master-${timeStamp}.yaml`});
+             changelogFile: `./db/master/changelog-schema-data.yaml`});
 }
 
 const diff = async () => {
@@ -80,9 +81,8 @@ const update = (): void => {
         ...POSTGRESQL_DEFAULT_CONFIG,
         password: 'npg_cweS1VpKl0JL',
         username: 'neondb_owner',
-        url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/dev',
-        // changeLogFile: './db/master/changelog-schema.yaml',
-        changeLogFile: './db/data-diffs/2026-01-01T12-18-14-818Z/master-changelog.yaml',
+        url: 'jdbc:postgresql://ep-summer-hill-ad1oha2r-pooler.c-2.us-east-1.aws.neon.tech:5432/prod',
+        changeLogFile: './db/master/changelog-schema-data.yaml',
     };
     const liquibase: Liquibase = new Liquibase(config);
     liquibase.update({});
