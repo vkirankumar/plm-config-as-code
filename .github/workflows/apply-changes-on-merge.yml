@@ -30,16 +30,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Get PR body
-        run: echo Commit Message ${{ github.event.head_commit.message }}
+      - name: Install dependencies
+        run: npm install
 
-      # - name: Install dependencies
-      #   run: npm install
+      - name: Build 
+        run: npm run build
 
-      # - name: Build 
-      #   run: npm run build
-
-      # - name: Apply data transformation 
-      #   id: transform
-      #   run: npm run merge:prod
+      - name: Apply data transformation 
+        id: transform
+        run: npm run merge:prod
         
