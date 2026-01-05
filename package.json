@@ -11,7 +11,8 @@
     "diff:prod": "node dist/diff.js",
     "sync": "node src/sync.ts",
     "sync:prod": "node dist/sync.js",
-    "test": "node dist/test.js"
+    "test": "node dist/test.js",
+    "lint": "node lint"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +21,8 @@
   "devDependencies": {
     "@types/node": "^25.0.3",
     "liquibase": "^4.28.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yaml-lint": "^1.7.0"
   },
   "dependencies": {
     "@types/pg": "^8.16.0",
