@@ -38,13 +38,13 @@ jobs:
 
       - name: Run diff [ Reference DB vs Target DB ]
         id: transform
-        # env:
-        #   DB_HOST: ${{ secrets.DB_HOST }}
-        #   PORT: ${{ secrets.PORT }}
-        #   DB_USERNAME: ${{ secrets.DB_HOST }}
-        #   DB_PASSWORD: ${{ secrets.DB_HOST }}
-        #   DB_TARGET: ${{ secrets.DB_HOST }}
-        #   DB_REFERENCE: ${{ secrets.DB_HOST }}
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          PORT: ${{ secrets.PORT }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_TARGET: ${{ secrets.DB_TARGET }}
+          DB_REFERENCE: ${{ secrets.DB_REFERENCE }}
         run: npm run diff:prod
 
       - name: Check DB diff
