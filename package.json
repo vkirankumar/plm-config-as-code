@@ -7,10 +7,10 @@
     "build": "tsc",
     "start": "node src/index.ts",
     "start:prod": "node dist/index.js",
+    "diff": "node src/diff.ts",
+    "diff:prod": "node dist/diff.js",
     "sync": "node src/sync.ts",
     "sync:prod": "node dist/sync.js",
-    "merge": "node src/merge.ts",
-    "merge:prod": "node dist/merge.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
