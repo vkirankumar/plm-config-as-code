@@ -1,4 +1,7 @@
 import { log } from "console";
+import { configDotenv } from 'dotenv';
+
+configDotenv();
 
 const init = async () => {
     log("Hello Liquibase!!!");
