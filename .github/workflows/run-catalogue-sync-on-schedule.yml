@@ -97,3 +97,5 @@ jobs:
             - PLM catalogue changes between design time and runtime catalog.
           labels: |
             automated pr
+          assignees: vkirankumar
+          reviewers: vkirankumar
