@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: ./db/diff/2026-01-05T09-42-10-051Z/data/service-data.yaml
