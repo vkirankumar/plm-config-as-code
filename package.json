@@ -11,7 +11,7 @@
     "diff:prod": "node dist/diff.js",
     "sync": "node src/sync.ts",
     "sync:prod": "node dist/sync.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "keywords": [],
   "author": "",

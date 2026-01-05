@@ -1,0 +1,37 @@
+name: Test Flow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  MergeCatalogChanges:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x] 
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build 
+        run: npm run build
+
+      - name: Test 
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          PORT: ${{ secrets.PORT }}
+          DB_USERNAME: ${{ secrets.DB_HOST }}
+          DB_PASSWORD: ${{ secrets.DB_HOST }}
+          DB_TARGET: ${{ secrets.DB_HOST }}
+          DB_REFERENCE: ${{ secrets.DB_HOST }}
+        run: npm run test
+        
