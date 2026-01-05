@@ -6,8 +6,18 @@ configDotenv();
 const init = async () => {
     log("Hello Liquibase!!!");
     try {
-        const host = process.env.DB_HOST;
-        log(host?.substring(2, 14));
+        let str = process.env.DB_USERNAME;
+        log("Username = " + str?.substring(0, str.length - 1));
+        str = process.env.DB_PASSWORD;
+        log("Password = " + str?.substring(0, str.length - 1));
+        str = process.env.PORT;
+        log("Post = " + str?.substring(0, str.length - 1));
+        str = process.env.DB_HOST;
+        log("Host = " + str?.substring(0, str.length - 1));
+        str = process.env.DB_REFERENCE;
+        log("Ref DB = " + str?.substring(0, str.length - 1));
+        str = process.env.DB_TARGET;
+        log("Target DB = " + str?.substring(0, str.length - 1));
     } catch (error) {
         log("Failed with error " + error);
     }
