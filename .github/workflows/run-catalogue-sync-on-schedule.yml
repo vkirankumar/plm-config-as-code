@@ -91,11 +91,11 @@ jobs:
           branch: 'auto-pr-branch-${{ steps.transform.outputs.diffPath }}'
           base: main
           delete-branch: true
-          title: 'PR: PLM catalogue changes'
+          title: '[PR]: PLM catalogue changes - ${{ steps.transform.outputs.diffPath }}'
           body: |
             AUTO GENERATED PR:
             - PLM catalogue changes between design time and runtime catalog.
           labels: |
             automated pr
-          assignees: vkirankumar
-          reviewers: vkirankumar
+          # assignees: vkirankumar
+          # reviewers: vkirankumar
