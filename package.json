@@ -11,7 +11,7 @@
     "diff:prod": "node dist/diff.js",
     "sync": "node src/sync.ts",
     "sync:prod": "node dist/sync.js",
-    "test": "node test.js"
+    "test": "node dist/test.js"
   },
   "keywords": [],
   "author": "",
