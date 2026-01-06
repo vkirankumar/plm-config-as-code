@@ -1,0 +1,93 @@
+databaseChangeLog:
+
+- changeSet:
+    id: spec_characteristic-insert-2000
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '2000'
+            - column:
+                name: specification_id
+                value: '1000'
+            - column:
+                name: code
+                value: 'DATA_LIMIT'
+            - column:
+                name: data_type
+                value: 'NUMBER'
+            - column:
+                name: mandatory
+                value: true
+
+- changeSet:
+    id: spec_characteristic-insert-2001
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '2001'
+            - column:
+                name: specification_id
+                value: '1000'
+            - column:
+                name: code
+                value: 'VALIDITY'
+            - column:
+                name: data_type
+                value: 'NUMBER'
+            - column:
+                name: mandatory
+                value: true
+
+- changeSet:
+    id: spec_characteristic-insert-2002
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '2002'
+            - column:
+                name: specification_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'COLOR'
+            - column:
+                name: data_type
+                value: 'STRING'
+            - column:
+                name: mandatory
+                value: true
+
+- changeSet:
+    id: spec_characteristic-insert-2003
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '2003'
+            - column:
+                name: specification_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'STORAGE'
+            - column:
+                name: data_type
+                value: 'STRING'
+            - column:
+                name: mandatory
+                value: true

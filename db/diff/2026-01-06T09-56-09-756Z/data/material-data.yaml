@@ -1,0 +1,47 @@
+databaseChangeLog:
+
+- changeSet:
+    id: material-insert-9000
+    author: auto
+    changes:
+      - insert:
+          tableName: material
+          columns:
+            - column:
+                name: material_id
+                value: '9000'
+            - column:
+                name: offering_id
+                value: '3001'
+            - column:
+                name: sku
+                value: 'IP15-BLK-128'
+            - column:
+                name: color
+                value: 'Black'
+            - column:
+                name: storage
+                value: '128GB'
+
+- changeSet:
+    id: material-insert-9001
+    author: auto
+    changes:
+      - insert:
+          tableName: material
+          columns:
+            - column:
+                name: material_id
+                value: '9001'
+            - column:
+                name: offering_id
+                value: '3001'
+            - column:
+                name: sku
+                value: 'IP15-BLU-256'
+            - column:
+                name: color
+                value: 'Blue'
+            - column:
+                name: storage
+                value: '256GB'
