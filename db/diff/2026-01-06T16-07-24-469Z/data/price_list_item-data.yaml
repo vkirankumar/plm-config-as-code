@@ -1,0 +1,41 @@
+databaseChangeLog:
+
+- changeSet:
+    id: price_list_item-insert-10000
+    author: auto
+    changes:
+      - insert:
+          tableName: price_list_item
+          columns:
+            - column:
+                name: price_list_item_id
+                value: '10000'
+            - column:
+                name: price_list_id
+                value: '1000'
+            - column:
+                name: amount
+                value: '30.00'
+            - column:
+                name: charge_type
+                value: 'RECURRENT'
+
+- changeSet:
+    id: price_list_item-insert-10001
+    author: auto
+    changes:
+      - insert:
+          tableName: price_list_item
+          columns:
+            - column:
+                name: price_list_item_id
+                value: '10001'
+            - column:
+                name: price_list_id
+                value: '1000'
+            - column:
+                name: amount
+                value: '900.00'
+            - column:
+                name: charge_type
+                value: 'ONE_TIME'

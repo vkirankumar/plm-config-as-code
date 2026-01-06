@@ -1,0 +1,35 @@
+databaseChangeLog:
+
+- changeSet:
+    id: offering_price-insert-10000
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_price
+          columns:
+            - column:
+                name: offering_price_id
+                value: '10000'
+            - column:
+                name: offering_id
+                value: '10003'
+            - column:
+                name: price_list_item_id
+                value: '10000'
+
+- changeSet:
+    id: offering_price-insert-10001
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_price
+          columns:
+            - column:
+                name: offering_price_id
+                value: '10001'
+            - column:
+                name: offering_id
+                value: '10004'
+            - column:
+                name: price_list_item_id
+                value: '10001'

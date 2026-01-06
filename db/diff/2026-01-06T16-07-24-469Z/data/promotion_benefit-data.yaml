@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+- changeSet:
+    id: promotion_benefit-insert-10000
+    author: auto
+    changes:
+      - insert:
+          tableName: promotion_benefit
+          columns:
+            - column:
+                name: benefit_id
+                value: '10000'
+            - column:
+                name: promotion_id
+                value: '1000'
+            - column:
+                name: benefit_type
+                value: 'PERCENT'
+            - column:
+                name: benefit_value
+                value: '10.00'

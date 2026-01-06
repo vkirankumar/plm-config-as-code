@@ -1,0 +1,97 @@
+databaseChangeLog:
+
+- changeSet:
+    id: product_offering-insert-10003
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '10003'
+            - column:
+                name: catalog_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'SUB_MOB_24'
+            - column:
+                name: name
+                value: 'Mobile Subscription 24M'
+            - column:
+                name: offering_type
+                value: 'BASE'
+            - column:
+                name: status
+                value: 'ACTIVE'
+            - column:
+                name: valid_from
+                value: '2026-01-06'
+            - column:
+                name: valid_to
+                value: null
+
+- changeSet:
+    id: product_offering-insert-10004
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '10004'
+            - column:
+                name: catalog_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'DEV_IPHONE_15'
+            - column:
+                name: name
+                value: 'iPhone 15'
+            - column:
+                name: offering_type
+                value: 'DEVICE'
+            - column:
+                name: status
+                value: 'ACTIVE'
+            - column:
+                name: valid_from
+                value: '2026-01-06'
+            - column:
+                name: valid_to
+                value: null
+
+- changeSet:
+    id: product_offering-insert-10005
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '10005'
+            - column:
+                name: catalog_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'BND_MOB_IP15'
+            - column:
+                name: name
+                value: 'Mobile + iPhone 15 Bundle'
+            - column:
+                name: offering_type
+                value: 'BUNDLE'
+            - column:
+                name: status
+                value: 'ACTIVE'
+            - column:
+                name: valid_from
+                value: '2026-01-06'
+            - column:
+                name: valid_to
+                value: null

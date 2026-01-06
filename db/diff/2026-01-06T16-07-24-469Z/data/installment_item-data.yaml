@@ -1,0 +1,481 @@
+databaseChangeLog:
+
+- changeSet:
+    id: installment_item-insert-10000
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10000'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 1
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10001
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10001'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 2
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10002
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10002'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 3
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10003
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10003'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 4
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10004
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10004'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 5
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10005
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10005'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 6
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10006
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10006'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 7
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10007
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10007'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 8
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10008
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10008'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 9
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10009
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10009'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 10
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10010
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10010'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 11
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10011
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10011'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 12
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10012
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10012'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 13
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10013
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10013'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 14
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10014
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10014'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 15
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10015
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10015'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 16
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10016
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10016'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 17
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10017
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10017'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 18
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10018
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10018'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 19
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10019
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10019'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 20
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10020
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10020'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 21
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10021
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10021'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 22
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10022
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10022'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 23
+            - column:
+                name: amount
+                value: '37.50'
+
+- changeSet:
+    id: installment_item-insert-10023
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_item
+          columns:
+            - column:
+                name: installment_item_id
+                value: '10023'
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: month_no
+                value: 24
+            - column:
+                name: amount
+                value: '37.50'
