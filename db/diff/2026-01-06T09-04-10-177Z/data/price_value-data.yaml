@@ -1,0 +1,17 @@
+databaseChangeLog:
+
+- changeSet:
+    id: price_value-delete-5
+    author: auto
+    changes:
+      - delete:
+          tableName: price_value
+          where: price_value_id = '5'
+
+- changeSet:
+    id: price_value-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: price_value
+          where: price_value_id = '6'

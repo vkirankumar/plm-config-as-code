@@ -1,0 +1,25 @@
+databaseChangeLog:
+
+- changeSet:
+    id: rel_o2o-delete-5
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_o2o
+          where: o2o_id = '5'
+
+- changeSet:
+    id: rel_o2o-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_o2o
+          where: o2o_id = '6'
+
+- changeSet:
+    id: rel_o2o-delete-7
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_o2o
+          where: o2o_id = '7'

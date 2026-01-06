@@ -1,0 +1,17 @@
+databaseChangeLog:
+
+- changeSet:
+    id: rel_c2c-delete-1
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2c
+          where: c2c_id = '1'
+
+- changeSet:
+    id: rel_c2c-delete-2
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2c
+          where: c2c_id = '2'

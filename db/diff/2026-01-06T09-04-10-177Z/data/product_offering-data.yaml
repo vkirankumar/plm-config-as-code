@@ -1,0 +1,33 @@
+databaseChangeLog:
+
+- changeSet:
+    id: product_offering-delete-3
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '3'
+
+- changeSet:
+    id: product_offering-delete-4
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '4'
+
+- changeSet:
+    id: product_offering-delete-9
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '9'
+
+- changeSet:
+    id: product_offering-delete-10
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '10'
