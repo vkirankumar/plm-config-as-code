@@ -1,0 +1,117 @@
+databaseChangeLog:
+
+- changeSet:
+    id: price_component-insert-6000
+    author: auto
+    changes:
+      - insert:
+          tableName: price_component
+          columns:
+            - column:
+                name: price_component_id
+                value: '6000'
+            - column:
+                name: offering_id
+                value: '3000'
+            - column:
+                name: type
+                value: 'RECURRENT'
+            - column:
+                name: currency
+                value: 'EUR'
+
+- changeSet:
+    id: price_component-insert-6001
+    author: auto
+    changes:
+      - insert:
+          tableName: price_component
+          columns:
+            - column:
+                name: price_component_id
+                value: '6001'
+            - column:
+                name: offering_id
+                value: '3001'
+            - column:
+                name: type
+                value: 'ONE_TIME'
+            - column:
+                name: currency
+                value: 'EUR'
+
+- changeSet:
+    id: price_component-insert-6100
+    author: auto
+    changes:
+      - insert:
+          tableName: price_component
+          columns:
+            - column:
+                name: price_component_id
+                value: '6100'
+            - column:
+                name: offering_id
+                value: '3100'
+            - column:
+                name: type
+                value: 'RECURRENT'
+            - column:
+                name: currency
+                value: 'EUR'
+
+- changeSet:
+    id: price_component-insert-6200
+    author: auto
+    changes:
+      - insert:
+          tableName: price_component
+          columns:
+            - column:
+                name: price_component_id
+                value: '6200'
+            - column:
+                name: offering_id
+                value: '3200'
+            - column:
+                name: type
+                value: 'RECURRENT'
+            - column:
+                name: currency
+                value: 'EUR'
+
+- changeSet:
+    id: price_component-insert-6300
+    author: auto
+    changes:
+      - insert:
+          tableName: price_component
+          columns:
+            - column:
+                name: price_component_id
+                value: '6300'
+            - column:
+                name: offering_id
+                value: '3300'
+            - column:
+                name: type
+                value: 'RECURRENT'
+            - column:
+                name: currency
+                value: 'EUR'
+
+- changeSet:
+    id: price_component-delete-5
+    author: auto
+    changes:
+      - delete:
+          tableName: price_component
+          where: price_component_id = '5'
+
+- changeSet:
+    id: price_component-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: price_component
+          where: price_component_id = '6'

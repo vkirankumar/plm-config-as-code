@@ -1,0 +1,193 @@
+databaseChangeLog:
+
+- changeSet:
+    id: product_offering-insert-3000
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '3000'
+            - column:
+                name: code
+                value: 'PLAN_10GB'
+            - column:
+                name: name
+                value: '10GB Mobile Plan'
+            - column:
+                name: status
+                value: 'ACTIVE'
+            - column:
+                name: available_from
+                value: '2024-01-01'
+            - column:
+                name: available_to
+                value: null
+            - column:
+                name: is_top_offer
+                value: true
+            - column:
+                name: specification_id
+                value: '1000'
+
+- changeSet:
+    id: product_offering-insert-3001
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '3001'
+            - column:
+                name: code
+                value: 'IPHONE_15'
+            - column:
+                name: name
+                value: 'iPhone 15'
+            - column:
+                name: status
+                value: 'ACTIVE'
+            - column:
+                name: available_from
+                value: '2024-01-01'
+            - column:
+                name: available_to
+                value: null
+            - column:
+                name: is_top_offer
+                value: true
+            - column:
+                name: specification_id
+                value: '1001'
+
+- changeSet:
+    id: product_offering-insert-3100
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '3100'
+            - column:
+                name: code
+                value: 'IPHONE_15_EMI_24M'
+            - column:
+                name: name
+                value: 'iPhone 15 – 24 Months Installment'
+            - column:
+                name: status
+                value: 'ACTIVE'
+            - column:
+                name: available_from
+                value: '2024-01-01'
+            - column:
+                name: available_to
+                value: null
+            - column:
+                name: is_top_offer
+                value: false
+            - column:
+                name: specification_id
+                value: '1001'
+
+- changeSet:
+    id: product_offering-insert-3200
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '3200'
+            - column:
+                name: code
+                value: 'PROMO_3M_FREE'
+            - column:
+                name: name
+                value: '3 Months Free Subscription Promo'
+            - column:
+                name: status
+                value: 'ACTIVE'
+            - column:
+                name: available_from
+                value: '2024-01-01'
+            - column:
+                name: available_to
+                value: '2024-06-30'
+            - column:
+                name: is_top_offer
+                value: false
+            - column:
+                name: specification_id
+                value: '1000'
+
+- changeSet:
+    id: product_offering-insert-3300
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '3300'
+            - column:
+                name: code
+                value: 'DISC_10PCT_6M'
+            - column:
+                name: name
+                value: '10% Discount for 6 Months'
+            - column:
+                name: status
+                value: 'ACTIVE'
+            - column:
+                name: available_from
+                value: '2024-01-01'
+            - column:
+                name: available_to
+                value: '2024-06-30'
+            - column:
+                name: is_top_offer
+                value: false
+            - column:
+                name: specification_id
+                value: '1000'
+
+- changeSet:
+    id: product_offering-delete-3
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '3'
+
+- changeSet:
+    id: product_offering-delete-4
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '4'
+
+- changeSet:
+    id: product_offering-delete-9
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '9'
+
+- changeSet:
+    id: product_offering-delete-10
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '10'

@@ -1,0 +1,57 @@
+databaseChangeLog:
+
+- changeSet:
+    id: rel_c2c-insert-100
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_c2c
+          columns:
+            - column:
+                name: c2c_id
+                value: '100'
+            - column:
+                name: parent_category_id
+                value: '10'
+            - column:
+                name: child_category_id
+                value: '12'
+            - column:
+                name: display_order
+                value: 1
+
+- changeSet:
+    id: rel_c2c-insert-101
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_c2c
+          columns:
+            - column:
+                name: c2c_id
+                value: '101'
+            - column:
+                name: parent_category_id
+                value: '10'
+            - column:
+                name: child_category_id
+                value: '11'
+            - column:
+                name: display_order
+                value: 2
+
+- changeSet:
+    id: rel_c2c-delete-1
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2c
+          where: c2c_id = '1'
+
+- changeSet:
+    id: rel_c2c-delete-2
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2c
+          where: c2c_id = '2'

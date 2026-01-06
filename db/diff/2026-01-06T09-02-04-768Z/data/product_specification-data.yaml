@@ -1,0 +1,89 @@
+databaseChangeLog:
+
+- changeSet:
+    id: product_specification-insert-1000
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '1000'
+            - column:
+                name: code
+                value: 'MOBILE_PLAN_SPEC'
+            - column:
+                name: name
+                value: 'Mobile Plan Specification'
+            - column:
+                name: type
+                value: 'SERVICE'
+
+- changeSet:
+    id: product_specification-insert-1001
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'DEVICE_SPEC'
+            - column:
+                name: name
+                value: 'Mobile Device Specification'
+            - column:
+                name: type
+                value: 'PHYSICAL'
+
+- changeSet:
+    id: product_specification-delete-7
+    author: auto
+    changes:
+      - delete:
+          tableName: product_specification
+          where: specification_id = '7'
+
+- changeSet:
+    id: product_specification-delete-8
+    author: auto
+    changes:
+      - delete:
+          tableName: product_specification
+          where: specification_id = '8'
+
+- changeSet:
+    id: product_specification-delete-9
+    author: auto
+    changes:
+      - delete:
+          tableName: product_specification
+          where: specification_id = '9'
+
+- changeSet:
+    id: product_specification-delete-10
+    author: auto
+    changes:
+      - delete:
+          tableName: product_specification
+          where: specification_id = '10'
+
+- changeSet:
+    id: product_specification-delete-11
+    author: auto
+    changes:
+      - delete:
+          tableName: product_specification
+          where: specification_id = '11'
+
+- changeSet:
+    id: product_specification-delete-12
+    author: auto
+    changes:
+      - delete:
+          tableName: product_specification
+          where: specification_id = '12'

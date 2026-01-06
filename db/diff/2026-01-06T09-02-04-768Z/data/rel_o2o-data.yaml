@@ -1,0 +1,129 @@
+databaseChangeLog:
+
+- changeSet:
+    id: rel_o2o-insert-8000
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_o2o
+          columns:
+            - column:
+                name: o2o_id
+                value: '8000'
+            - column:
+                name: parent_offering_id
+                value: '3000'
+            - column:
+                name: child_offering_id
+                value: '3001'
+            - column:
+                name: min_cardinality
+                value: 0
+            - column:
+                name: max_cardinality
+                value: 1
+            - column:
+                name: override_type
+                value: 'OPTIONAL'
+
+- changeSet:
+    id: rel_o2o-insert-8100
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_o2o
+          columns:
+            - column:
+                name: o2o_id
+                value: '8100'
+            - column:
+                name: parent_offering_id
+                value: '3001'
+            - column:
+                name: child_offering_id
+                value: '3100'
+            - column:
+                name: min_cardinality
+                value: 0
+            - column:
+                name: max_cardinality
+                value: 1
+            - column:
+                name: override_type
+                value: 'OPTIONAL'
+
+- changeSet:
+    id: rel_o2o-insert-8200
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_o2o
+          columns:
+            - column:
+                name: o2o_id
+                value: '8200'
+            - column:
+                name: parent_offering_id
+                value: '3000'
+            - column:
+                name: child_offering_id
+                value: '3200'
+            - column:
+                name: min_cardinality
+                value: 0
+            - column:
+                name: max_cardinality
+                value: 1
+            - column:
+                name: override_type
+                value: 'PROMOTION'
+
+- changeSet:
+    id: rel_o2o-insert-8300
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_o2o
+          columns:
+            - column:
+                name: o2o_id
+                value: '8300'
+            - column:
+                name: parent_offering_id
+                value: '3000'
+            - column:
+                name: child_offering_id
+                value: '3300'
+            - column:
+                name: min_cardinality
+                value: 0
+            - column:
+                name: max_cardinality
+                value: 1
+            - column:
+                name: override_type
+                value: 'DISCOUNT'
+
+- changeSet:
+    id: rel_o2o-delete-5
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_o2o
+          where: o2o_id = '5'
+
+- changeSet:
+    id: rel_o2o-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_o2o
+          where: o2o_id = '6'
+
+- changeSet:
+    id: rel_o2o-delete-7
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_o2o
+          where: o2o_id = '7'

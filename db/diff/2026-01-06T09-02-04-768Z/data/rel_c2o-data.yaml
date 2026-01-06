@@ -1,0 +1,73 @@
+databaseChangeLog:
+
+- changeSet:
+    id: rel_c2o-insert-4000
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_c2o
+          columns:
+            - column:
+                name: c2o_id
+                value: '4000'
+            - column:
+                name: parent_category_id
+                value: '12'
+            - column:
+                name: child_offering_id
+                value: '3000'
+            - column:
+                name: display_order
+                value: 1
+
+- changeSet:
+    id: rel_c2o-insert-4001
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_c2o
+          columns:
+            - column:
+                name: c2o_id
+                value: '4001'
+            - column:
+                name: parent_category_id
+                value: '11'
+            - column:
+                name: child_offering_id
+                value: '3001'
+            - column:
+                name: display_order
+                value: 1
+
+- changeSet:
+    id: rel_c2o-delete-4
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2o
+          where: c2o_id = '4'
+
+- changeSet:
+    id: rel_c2o-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2o
+          where: c2o_id = '6'
+
+- changeSet:
+    id: rel_c2o-delete-7
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2o
+          where: c2o_id = '7'
+
+- changeSet:
+    id: rel_c2o-delete-8
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2o
+          where: c2o_id = '8'

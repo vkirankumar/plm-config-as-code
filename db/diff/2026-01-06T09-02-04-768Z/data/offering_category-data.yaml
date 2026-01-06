@@ -1,0 +1,102 @@
+databaseChangeLog:
+
+- changeSet:
+    id: offering_category-insert-10
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '10'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'MOBILE'
+            - column:
+                name: name
+                value: 'Mobile Services'
+            - column:
+                name: display_order
+                value: 1
+
+- changeSet:
+    id: offering_category-insert-11
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '11'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'DEVICES'
+            - column:
+                name: name
+                value: 'Devices'
+            - column:
+                name: display_order
+                value: 2
+
+- changeSet:
+    id: offering_category-insert-12
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '12'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'PLANS'
+            - column:
+                name: name
+                value: 'Mobile Plans'
+            - column:
+                name: display_order
+                value: 3
+
+- changeSet:
+    id: offering_category-delete-2
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '2'
+
+- changeSet:
+    id: offering_category-delete-5
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '5'
+
+- changeSet:
+    id: offering_category-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '6'
+
+- changeSet:
+    id: offering_category-delete-7
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '7'

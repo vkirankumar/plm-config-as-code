@@ -1,0 +1,132 @@
+databaseChangeLog:
+
+- changeSet:
+    id: price_value-insert-7000
+    author: auto
+    changes:
+      - insert:
+          tableName: price_value
+          columns:
+            - column:
+                name: price_value_id
+                value: '7000'
+            - column:
+                name: price_component_id
+                value: '6000'
+            - column:
+                name: amount
+                value: '25.00'
+            - column:
+                name: start_date
+                value: '2024-01-01'
+            - column:
+                name: end_date
+                value: null
+
+- changeSet:
+    id: price_value-insert-7001
+    author: auto
+    changes:
+      - insert:
+          tableName: price_value
+          columns:
+            - column:
+                name: price_value_id
+                value: '7001'
+            - column:
+                name: price_component_id
+                value: '6001'
+            - column:
+                name: amount
+                value: '999.00'
+            - column:
+                name: start_date
+                value: '2024-01-01'
+            - column:
+                name: end_date
+                value: null
+
+- changeSet:
+    id: price_value-insert-7100
+    author: auto
+    changes:
+      - insert:
+          tableName: price_value
+          columns:
+            - column:
+                name: price_value_id
+                value: '7100'
+            - column:
+                name: price_component_id
+                value: '6100'
+            - column:
+                name: amount
+                value: '41.62'
+            - column:
+                name: start_date
+                value: '2024-01-01'
+            - column:
+                name: end_date
+                value: null
+
+- changeSet:
+    id: price_value-insert-7200
+    author: auto
+    changes:
+      - insert:
+          tableName: price_value
+          columns:
+            - column:
+                name: price_value_id
+                value: '7200'
+            - column:
+                name: price_component_id
+                value: '6200'
+            - column:
+                name: amount
+                value: '0.00'
+            - column:
+                name: start_date
+                value: '2024-01-01'
+            - column:
+                name: end_date
+                value: '2024-03-31'
+
+- changeSet:
+    id: price_value-insert-7300
+    author: auto
+    changes:
+      - insert:
+          tableName: price_value
+          columns:
+            - column:
+                name: price_value_id
+                value: '7300'
+            - column:
+                name: price_component_id
+                value: '6300'
+            - column:
+                name: amount
+                value: '-2.50'
+            - column:
+                name: start_date
+                value: '2024-01-01'
+            - column:
+                name: end_date
+                value: '2024-06-30'
+
+- changeSet:
+    id: price_value-delete-5
+    author: auto
+    changes:
+      - delete:
+          tableName: price_value
+          where: price_value_id = '5'
+
+- changeSet:
+    id: price_value-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: price_value
+          where: price_value_id = '6'
