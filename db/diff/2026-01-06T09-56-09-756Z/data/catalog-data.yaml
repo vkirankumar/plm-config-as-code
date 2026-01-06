@@ -1,0 +1,18 @@
+databaseChangeLog:
+
+- changeSet:
+    id: catalog-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: catalog
+          columns:
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'B2C'
+            - column:
+                name: name
+                value: 'B2C Product Catalog'

@@ -1,0 +1,105 @@
+databaseChangeLog:
+
+- changeSet:
+    id: offering_characteristic-insert-5000
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_characteristic
+          columns:
+            - column:
+                name: off_char_id
+                value: '5000'
+            - column:
+                name: offering_id
+                value: '3000'
+            - column:
+                name: spec_char_id
+                value: '2000'
+            - column:
+                name: visible
+                value: true
+            - column:
+                name: mandatory
+                value: true
+            - column:
+                name: modifiable
+                value: false
+
+- changeSet:
+    id: offering_characteristic-insert-5001
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_characteristic
+          columns:
+            - column:
+                name: off_char_id
+                value: '5001'
+            - column:
+                name: offering_id
+                value: '3000'
+            - column:
+                name: spec_char_id
+                value: '2001'
+            - column:
+                name: visible
+                value: true
+            - column:
+                name: mandatory
+                value: true
+            - column:
+                name: modifiable
+                value: false
+
+- changeSet:
+    id: offering_characteristic-insert-5002
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_characteristic
+          columns:
+            - column:
+                name: off_char_id
+                value: '5002'
+            - column:
+                name: offering_id
+                value: '3001'
+            - column:
+                name: spec_char_id
+                value: '2002'
+            - column:
+                name: visible
+                value: true
+            - column:
+                name: mandatory
+                value: true
+            - column:
+                name: modifiable
+                value: false
+
+- changeSet:
+    id: offering_characteristic-insert-5003
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_characteristic
+          columns:
+            - column:
+                name: off_char_id
+                value: '5003'
+            - column:
+                name: offering_id
+                value: '3001'
+            - column:
+                name: spec_char_id
+                value: '2003'
+            - column:
+                name: visible
+                value: true
+            - column:
+                name: mandatory
+                value: true
+            - column:
+                name: modifiable
+                value: false
