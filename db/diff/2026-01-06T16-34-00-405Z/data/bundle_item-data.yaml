@@ -1,0 +1,53 @@
+databaseChangeLog:
+
+- changeSet:
+    id: bundle_item-insert-10000
+    author: auto
+    changes:
+      - insert:
+          tableName: bundle_item
+          columns:
+            - column:
+                name: bundle_item_id
+                value: '10000'
+            - column:
+                name: bundle_id
+                value: '1000'
+            - column:
+                name: child_offering_id
+                value: '10000'
+            - column:
+                name: mandatory
+                value: true
+            - column:
+                name: min_qty
+                value: 1
+            - column:
+                name: max_qty
+                value: 1
+
+- changeSet:
+    id: bundle_item-insert-10001
+    author: auto
+    changes:
+      - insert:
+          tableName: bundle_item
+          columns:
+            - column:
+                name: bundle_item_id
+                value: '10001'
+            - column:
+                name: bundle_id
+                value: '1000'
+            - column:
+                name: child_offering_id
+                value: '10001'
+            - column:
+                name: mandatory
+                value: true
+            - column:
+                name: min_qty
+                value: 1
+            - column:
+                name: max_qty
+                value: 1

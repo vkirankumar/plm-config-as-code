@@ -1,0 +1,18 @@
+databaseChangeLog:
+
+- changeSet:
+    id: market-insert-1000
+    author: auto
+    changes:
+      - insert:
+          tableName: market
+          columns:
+            - column:
+                name: market_id
+                value: '1000'
+            - column:
+                name: code
+                value: 'NL'
+            - column:
+                name: name
+                value: 'Netherlands'
