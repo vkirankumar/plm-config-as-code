@@ -1,0 +1,93 @@
+databaseChangeLog:
+
+- changeSet:
+    id: offering_category-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '1'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'MATERIALS'
+            - column:
+                name: name
+                value: 'Device Materials'
+            - column:
+                name: display_order
+                value: 10
+
+- changeSet:
+    id: offering_category-insert-2
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '2'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'DEVICES'
+            - column:
+                name: name
+                value: 'Devices'
+            - column:
+                name: display_order
+                value: 20
+
+- changeSet:
+    id: offering_category-insert-3
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '3'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'MOBILE_SUBSCRIPTIONS'
+            - column:
+                name: name
+                value: 'Mobile Subscriptions'
+            - column:
+                name: display_order
+                value: 10
+
+- changeSet:
+    id: offering_category-insert-4
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '4'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'MOBILE'
+            - column:
+                name: name
+                value: 'Mobile Services'
+            - column:
+                name: display_order
+                value: 1

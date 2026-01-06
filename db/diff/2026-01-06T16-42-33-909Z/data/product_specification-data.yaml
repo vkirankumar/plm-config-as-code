@@ -1,0 +1,121 @@
+databaseChangeLog:
+
+- changeSet:
+    id: product_specification-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '1'
+            - column:
+                name: code
+                value: 'MOBILE_POSTPAID_SPEC'
+            - column:
+                name: name
+                value: 'Mobile Postpaid Specification'
+            - column:
+                name: type
+                value: 'SUBSCRIPTION'
+
+- changeSet:
+    id: product_specification-insert-2
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '2'
+            - column:
+                name: code
+                value: 'RATEPLAN_SPEC'
+            - column:
+                name: name
+                value: 'Rate Plan Specification'
+            - column:
+                name: type
+                value: 'RATEPLAN'
+
+- changeSet:
+    id: product_specification-insert-3
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '3'
+            - column:
+                name: code
+                value: 'ADDON_SPEC'
+            - column:
+                name: name
+                value: 'Add-on Specification'
+            - column:
+                name: type
+                value: 'ADDON'
+
+- changeSet:
+    id: product_specification-insert-4
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '4'
+            - column:
+                name: code
+                value: 'DEVICE_SPEC'
+            - column:
+                name: name
+                value: 'Device Product Specification'
+            - column:
+                name: type
+                value: 'DEVICE'
+
+- changeSet:
+    id: product_specification-insert-5
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '5'
+            - column:
+                name: code
+                value: 'MATERIAL_SPEC'
+            - column:
+                name: name
+                value: 'Material Specification'
+            - column:
+                name: type
+                value: 'MATERIAL'
+
+- changeSet:
+    id: product_specification-insert-6
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '6'
+            - column:
+                name: code
+                value: 'INSTALLMENT_PLAN_SPEC'
+            - column:
+                name: name
+                value: 'Installment Plan Specification'
+            - column:
+                name: type
+                value: 'INSTALLMENT_PLAN'
