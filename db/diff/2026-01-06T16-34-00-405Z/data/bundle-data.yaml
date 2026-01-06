@@ -1,0 +1,18 @@
+databaseChangeLog:
+
+- changeSet:
+    id: bundle-insert-1000
+    author: auto
+    changes:
+      - insert:
+          tableName: bundle
+          columns:
+            - column:
+                name: bundle_id
+                value: '1000'
+            - column:
+                name: offering_id
+                value: '10002'
+            - column:
+                name: bundle_type
+                value: 'HARD'

@@ -1,0 +1,15 @@
+databaseChangeLog:
+
+- changeSet:
+    id: offering_installment-insert-10001|1000
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_installment
+          columns:
+            - column:
+                name: offering_id
+                value: '10001'
+            - column:
+                name: installment_plan_id
+                value: '1000'
