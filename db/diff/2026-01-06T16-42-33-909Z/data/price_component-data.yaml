@@ -1,0 +1,41 @@
+databaseChangeLog:
+
+- changeSet:
+    id: price_component-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: price_component
+          columns:
+            - column:
+                name: price_component_id
+                value: '1'
+            - column:
+                name: offering_id
+                value: '4'
+            - column:
+                name: type
+                value: 'MRC'
+            - column:
+                name: currency
+                value: 'EUR'
+
+- changeSet:
+    id: price_component-insert-2
+    author: auto
+    changes:
+      - insert:
+          tableName: price_component
+          columns:
+            - column:
+                name: price_component_id
+                value: '2'
+            - column:
+                name: offering_id
+                value: '3'
+            - column:
+                name: type
+                value: 'NRC'
+            - column:
+                name: currency
+                value: 'EUR'

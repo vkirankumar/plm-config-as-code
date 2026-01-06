@@ -1,0 +1,162 @@
+databaseChangeLog:
+
+- changeSet:
+    id: spec_characteristic-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '1'
+            - column:
+                name: specification_id
+                value: '1'
+            - column:
+                name: code
+                value: 'CONTRACT_TERM'
+            - column:
+                name: data_type
+                value: 'Number'
+            - column:
+                name: mandatory
+                value: true
+
+- changeSet:
+    id: spec_characteristic-insert-2
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '2'
+            - column:
+                name: specification_id
+                value: '1'
+            - column:
+                name: code
+                value: 'SCENARIO'
+            - column:
+                name: data_type
+                value: 'Text'
+            - column:
+                name: mandatory
+                value: true
+
+- changeSet:
+    id: spec_characteristic-insert-3
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '3'
+            - column:
+                name: specification_id
+                value: '4'
+            - column:
+                name: code
+                value: 'DEVICE_TYPE'
+            - column:
+                name: data_type
+                value: 'Text'
+            - column:
+                name: mandatory
+                value: true
+
+- changeSet:
+    id: spec_characteristic-insert-4
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '4'
+            - column:
+                name: specification_id
+                value: '5'
+            - column:
+                name: code
+                value: 'COLOR'
+            - column:
+                name: data_type
+                value: 'Text'
+            - column:
+                name: mandatory
+                value: false
+
+- changeSet:
+    id: spec_characteristic-insert-5
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '5'
+            - column:
+                name: specification_id
+                value: '5'
+            - column:
+                name: code
+                value: 'STORAGE'
+            - column:
+                name: data_type
+                value: 'Text'
+            - column:
+                name: mandatory
+                value: false
+
+- changeSet:
+    id: spec_characteristic-insert-6
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '6'
+            - column:
+                name: specification_id
+                value: '6'
+            - column:
+                name: code
+                value: 'DURATION'
+            - column:
+                name: data_type
+                value: 'Number'
+            - column:
+                name: mandatory
+                value: true
+
+- changeSet:
+    id: spec_characteristic-insert-7
+    author: auto
+    changes:
+      - insert:
+          tableName: spec_characteristic
+          columns:
+            - column:
+                name: spec_char_id
+                value: '7'
+            - column:
+                name: specification_id
+                value: '6'
+            - column:
+                name: code
+                value: 'INTEREST_FREE'
+            - column:
+                name: data_type
+                value: 'Boolean'
+            - column:
+                name: mandatory
+                value: false

@@ -1,0 +1,129 @@
+databaseChangeLog:
+
+- changeSet:
+    id: product_offering-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '1'
+            - column:
+                name: code
+                value: 'DEV_IPHONE_15'
+            - column:
+                name: name
+                value: 'Apple iPhone 15 Device'
+            - column:
+                name: status
+                value: 'Active'
+            - column:
+                name: available_from
+                value: null
+            - column:
+                name: available_to
+                value: null
+            - column:
+                name: is_top_offer
+                value: false
+            - column:
+                name: specification_id
+                value: '4'
+
+- changeSet:
+    id: product_offering-insert-2
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '2'
+            - column:
+                name: code
+                value: 'SUB_MOB_POST_24'
+            - column:
+                name: name
+                value: 'Mobile Postpaid Subscription 24M'
+            - column:
+                name: status
+                value: 'Active'
+            - column:
+                name: available_from
+                value: null
+            - column:
+                name: available_to
+                value: null
+            - column:
+                name: is_top_offer
+                value: true
+            - column:
+                name: specification_id
+                value: '1'
+
+- changeSet:
+    id: product_offering-insert-3
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '3'
+            - column:
+                name: code
+                value: 'MAT_IPHONE_15_128_BLK'
+            - column:
+                name: name
+                value: 'iPhone 15 128GB Black'
+            - column:
+                name: status
+                value: 'Active'
+            - column:
+                name: available_from
+                value: null
+            - column:
+                name: available_to
+                value: null
+            - column:
+                name: is_top_offer
+                value: false
+            - column:
+                name: specification_id
+                value: '5'
+
+- changeSet:
+    id: product_offering-insert-4
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '4'
+            - column:
+                name: code
+                value: 'IP_24M'
+            - column:
+                name: name
+                value: '24 Month Installment Plan'
+            - column:
+                name: status
+                value: 'Active'
+            - column:
+                name: available_from
+                value: null
+            - column:
+                name: available_to
+                value: null
+            - column:
+                name: is_top_offer
+                value: false
+            - column:
+                name: specification_id
+                value: '6'

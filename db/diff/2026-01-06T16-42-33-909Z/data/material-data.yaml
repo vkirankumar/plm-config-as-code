@@ -1,0 +1,24 @@
+databaseChangeLog:
+
+- changeSet:
+    id: material-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: material
+          columns:
+            - column:
+                name: material_id
+                value: '1'
+            - column:
+                name: offering_id
+                value: '3'
+            - column:
+                name: sku
+                value: 'IPH15-128-BLK'
+            - column:
+                name: color
+                value: 'Black'
+            - column:
+                name: storage
+                value: '128GB'

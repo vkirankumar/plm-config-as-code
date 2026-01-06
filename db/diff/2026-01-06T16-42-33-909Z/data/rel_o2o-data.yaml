@@ -1,0 +1,79 @@
+databaseChangeLog:
+
+- changeSet:
+    id: rel_o2o-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_o2o
+          columns:
+            - column:
+                name: o2o_id
+                value: '1'
+            - column:
+                name: parent_offering_id
+                value: '1'
+            - column:
+                name: child_offering_id
+                value: '3'
+            - column:
+                name: min_cardinality
+                value: 1
+            - column:
+                name: max_cardinality
+                value: 1
+            - column:
+                name: override_type
+                value: 'NO_OVERRIDE'
+
+- changeSet:
+    id: rel_o2o-insert-2
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_o2o
+          columns:
+            - column:
+                name: o2o_id
+                value: '2'
+            - column:
+                name: parent_offering_id
+                value: '1'
+            - column:
+                name: child_offering_id
+                value: '4'
+            - column:
+                name: min_cardinality
+                value: 0
+            - column:
+                name: max_cardinality
+                value: 1
+            - column:
+                name: override_type
+                value: 'NO_OVERRIDE'
+
+- changeSet:
+    id: rel_o2o-insert-3
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_o2o
+          columns:
+            - column:
+                name: o2o_id
+                value: '3'
+            - column:
+                name: parent_offering_id
+                value: '2'
+            - column:
+                name: child_offering_id
+                value: '1'
+            - column:
+                name: min_cardinality
+                value: 0
+            - column:
+                name: max_cardinality
+                value: 1
+            - column:
+                name: override_type
+                value: 'NO_OVERRIDE'

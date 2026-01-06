@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/catalog-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/offering_category-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/rel_c2c-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/product_specification-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/product_offering-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/rel_c2o-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/rel_o2o-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/price_component-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/price_value-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/spec_characteristic-data.yaml
+  - include:
+      file: ./db/diff/2026-01-06T16-42-33-909Z/data/material-data.yaml
