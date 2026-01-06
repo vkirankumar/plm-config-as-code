@@ -1,0 +1,18 @@
+databaseChangeLog:
+
+- changeSet:
+    id: distribution_channel-insert-1001
+    author: auto
+    changes:
+      - insert:
+          tableName: distribution_channel
+          columns:
+            - column:
+                name: channel_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'ONLINE'
+            - column:
+                name: name
+                value: 'Online'

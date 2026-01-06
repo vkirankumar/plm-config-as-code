@@ -1,0 +1,972 @@
+databaseChangeLog:
+- changeSet:
+    id: 1767715654825-1
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offering_catalog_pkey
+            name: catalog_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: code
+            type: VARCHAR(50)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: status
+            type: VARCHAR(30)
+        - column:
+            name: valid_from
+            type: date
+        - column:
+            name: valid_to
+            type: date
+        - column:
+            defaultValueComputed: now()
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        tableName: offering_catalog
+- changeSet:
+    id: 1767715654825-2
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: market_pkey
+            name: market_id
+            type: BIGINT
+        - column:
+            name: code
+            type: VARCHAR(50)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: market
+- changeSet:
+    id: 1767715654825-3
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: customer_category_pkey
+            name: customer_category_id
+            type: BIGINT
+        - column:
+            name: code
+            type: VARCHAR(50)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: customer_category
+- changeSet:
+    id: 1767715654825-4
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: distribution_channel_pkey
+            name: channel_id
+            type: BIGINT
+        - column:
+            name: code
+            type: VARCHAR(50)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: distribution_channel
+- changeSet:
+    id: 1767715654825-5
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: product_offering_pkey
+            name: offering_id
+            type: BIGINT
+        - column:
+            name: catalog_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: code
+            type: VARCHAR(50)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: offering_type
+            type: VARCHAR(30)
+        - column:
+            name: status
+            type: VARCHAR(30)
+        - column:
+            name: valid_from
+            type: date
+        - column:
+            name: valid_to
+            type: date
+        tableName: product_offering
+- changeSet:
+    id: 1767715654825-6
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offering_category_pkey
+            name: category_id
+            type: BIGINT
+        - column:
+            name: code
+            type: VARCHAR(50)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: offering_category
+- changeSet:
+    id: 1767715654825-7
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: price_list_pkey
+            name: price_list_id
+            type: BIGINT
+        - column:
+            name: code
+            type: VARCHAR(50)
+        - column:
+            name: currency
+            type: CHAR(3)
+        tableName: price_list
+- changeSet:
+    id: 1767715654825-8
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: price_list_item_pkey
+            name: price_list_item_id
+            type: BIGINT
+        - column:
+            name: price_list_id
+            type: BIGINT
+        - column:
+            name: amount
+            type: numeric(12, 2)
+        - column:
+            name: charge_type
+            type: VARCHAR(30)
+        tableName: price_list_item
+- changeSet:
+    id: 1767715654825-9
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offering_price_pkey
+            name: offering_price_id
+            type: BIGINT
+        - column:
+            name: offering_id
+            type: BIGINT
+        - column:
+            name: price_list_item_id
+            type: BIGINT
+        tableName: offering_price
+- changeSet:
+    id: 1767715654825-10
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: product_offering_characteristic_pkey
+            name: characteristic_id
+            type: BIGINT
+        - column:
+            name: offering_id
+            type: BIGINT
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: value_type
+            type: VARCHAR(30)
+        tableName: product_offering_characteristic
+- changeSet:
+    id: 1767715654825-11
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offering_characteristic_value_pkey
+            name: value_id
+            type: BIGINT
+        - column:
+            name: characteristic_id
+            type: BIGINT
+        - column:
+            name: value
+            type: VARCHAR(255)
+        tableName: offering_characteristic_value
+- changeSet:
+    id: 1767715654825-12
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: installment_plan_pkey
+            name: installment_plan_id
+            type: BIGINT
+        - column:
+            name: code
+            type: VARCHAR(50)
+        - column:
+            name: tenure_months
+            type: INTEGER
+        - column:
+            name: interest_rate
+            type: numeric(5, 2)
+        tableName: installment_plan
+- changeSet:
+    id: 1767715654825-13
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: installment_item_pkey
+            name: installment_item_id
+            type: BIGINT
+        - column:
+            name: installment_plan_id
+            type: BIGINT
+        - column:
+            name: month_no
+            type: INTEGER
+        - column:
+            name: amount
+            type: numeric(12, 2)
+        tableName: installment_item
+- changeSet:
+    id: 1767715654825-14
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: promotion_pkey
+            name: promotion_id
+            type: BIGINT
+        - column:
+            name: code
+            type: VARCHAR(50)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: promo_type
+            type: VARCHAR(30)
+        - column:
+            name: valid_from
+            type: date
+        - column:
+            name: valid_to
+            type: date
+        tableName: promotion
+- changeSet:
+    id: 1767715654825-15
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: promotion_benefit_pkey
+            name: benefit_id
+            type: BIGINT
+        - column:
+            name: promotion_id
+            type: BIGINT
+        - column:
+            name: benefit_type
+            type: VARCHAR(30)
+        - column:
+            name: benefit_value
+            type: numeric(10, 2)
+        tableName: promotion_benefit
+- changeSet:
+    id: 1767715654825-16
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: bundle_pkey
+            name: bundle_id
+            type: BIGINT
+        - column:
+            name: offering_id
+            type: BIGINT
+        - column:
+            name: bundle_type
+            type: VARCHAR(30)
+        tableName: bundle
+- changeSet:
+    id: 1767715654825-17
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: bundle_item_pkey
+            name: bundle_item_id
+            type: BIGINT
+        - column:
+            name: bundle_id
+            type: BIGINT
+        - column:
+            name: child_offering_id
+            type: BIGINT
+        - column:
+            defaultValueBoolean: true
+            name: mandatory
+            type: BOOLEAN
+        - column:
+            defaultValueNumeric: 1
+            name: min_qty
+            type: INTEGER
+        - column:
+            defaultValueNumeric: 1
+            name: max_qty
+            type: INTEGER
+        tableName: bundle_item
+- changeSet:
+    id: 1767715654825-18
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: offering_catalog_code_key
+        tableName: offering_catalog
+- changeSet:
+    id: 1767715654825-19
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: market_code_key
+        tableName: market
+- changeSet:
+    id: 1767715654825-20
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: customer_category_code_key
+        tableName: customer_category
+- changeSet:
+    id: 1767715654825-21
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: distribution_channel_code_key
+        tableName: distribution_channel
+- changeSet:
+    id: 1767715654825-22
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: product_offering_code_key
+        tableName: product_offering
+- changeSet:
+    id: 1767715654825-23
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: offering_category_code_key
+        tableName: offering_category
+- changeSet:
+    id: 1767715654825-24
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: price_list_code_key
+        tableName: price_list
+- changeSet:
+    id: 1767715654825-25
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: installment_plan_code_key
+        tableName: installment_plan
+- changeSet:
+    id: 1767715654825-26
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: promotion_code_key
+        tableName: promotion
+- changeSet:
+    id: 1767715654825-27
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: catalog_customer_category_pkey
+            name: catalog_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: catalog_customer_category_pkey
+            name: customer_category_id
+            type: BIGINT
+        tableName: catalog_customer_category
+- changeSet:
+    id: 1767715654825-28
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: catalog_distribution_channel_pkey
+            name: catalog_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: catalog_distribution_channel_pkey
+            name: channel_id
+            type: BIGINT
+        tableName: catalog_distribution_channel
+- changeSet:
+    id: 1767715654825-29
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: catalog_market_pkey
+            name: catalog_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: catalog_market_pkey
+            name: market_id
+            type: BIGINT
+        tableName: catalog_market
+- changeSet:
+    id: 1767715654825-30
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: category_offering_rel_pkey
+            name: category_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: category_offering_rel_pkey
+            name: offering_id
+            type: BIGINT
+        tableName: category_offering_rel
+- changeSet:
+    id: 1767715654825-31
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offering_installment_pkey
+            name: offering_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offering_installment_pkey
+            name: installment_plan_id
+            type: BIGINT
+        tableName: offering_installment
+- changeSet:
+    id: 1767715654825-32
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: promotion_offering_pkey
+            name: promotion_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: promotion_offering_pkey
+            name: offering_id
+            type: BIGINT
+        tableName: promotion_offering
+- changeSet:
+    id: 1767715654825-33
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: bundle_id
+        baseTableName: bundle_item
+        constraintName: bundle_item_bundle_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: bundle_id
+        referencedTableName: bundle
+        validate: true
+- changeSet:
+    id: 1767715654825-34
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: child_offering_id
+        baseTableName: bundle_item
+        constraintName: bundle_item_child_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767715654825-35
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: bundle
+        constraintName: bundle_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767715654825-36
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: catalog_id
+        baseTableName: catalog_customer_category
+        constraintName: catalog_customer_category_catalog_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: catalog_id
+        referencedTableName: offering_catalog
+        validate: true
+- changeSet:
+    id: 1767715654825-37
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: customer_category_id
+        baseTableName: catalog_customer_category
+        constraintName: catalog_customer_category_customer_category_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: customer_category_id
+        referencedTableName: customer_category
+        validate: true
+- changeSet:
+    id: 1767715654825-38
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: catalog_id
+        baseTableName: catalog_distribution_channel
+        constraintName: catalog_distribution_channel_catalog_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: catalog_id
+        referencedTableName: offering_catalog
+        validate: true
+- changeSet:
+    id: 1767715654825-39
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: channel_id
+        baseTableName: catalog_distribution_channel
+        constraintName: catalog_distribution_channel_channel_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: channel_id
+        referencedTableName: distribution_channel
+        validate: true
+- changeSet:
+    id: 1767715654825-40
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: catalog_id
+        baseTableName: catalog_market
+        constraintName: catalog_market_catalog_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: catalog_id
+        referencedTableName: offering_catalog
+        validate: true
+- changeSet:
+    id: 1767715654825-41
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: market_id
+        baseTableName: catalog_market
+        constraintName: catalog_market_market_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: market_id
+        referencedTableName: market
+        validate: true
+- changeSet:
+    id: 1767715654825-42
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: category_id
+        baseTableName: category_offering_rel
+        constraintName: category_offering_rel_category_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: category_id
+        referencedTableName: offering_category
+        validate: true
+- changeSet:
+    id: 1767715654825-43
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: category_offering_rel
+        constraintName: category_offering_rel_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767715654825-44
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: installment_plan_id
+        baseTableName: installment_item
+        constraintName: installment_item_installment_plan_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: installment_plan_id
+        referencedTableName: installment_plan
+        validate: true
+- changeSet:
+    id: 1767715654825-45
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: characteristic_id
+        baseTableName: offering_characteristic_value
+        constraintName: offering_characteristic_value_characteristic_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: characteristic_id
+        referencedTableName: product_offering_characteristic
+        validate: true
+- changeSet:
+    id: 1767715654825-46
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: installment_plan_id
+        baseTableName: offering_installment
+        constraintName: offering_installment_installment_plan_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: installment_plan_id
+        referencedTableName: installment_plan
+        validate: true
+- changeSet:
+    id: 1767715654825-47
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: offering_installment
+        constraintName: offering_installment_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767715654825-48
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: offering_price
+        constraintName: offering_price_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767715654825-49
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: price_list_item_id
+        baseTableName: offering_price
+        constraintName: offering_price_price_list_item_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: price_list_item_id
+        referencedTableName: price_list_item
+        validate: true
+- changeSet:
+    id: 1767715654825-50
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: price_list_id
+        baseTableName: price_list_item
+        constraintName: price_list_item_price_list_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: price_list_id
+        referencedTableName: price_list
+        validate: true
+- changeSet:
+    id: 1767715654825-51
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: catalog_id
+        baseTableName: product_offering
+        constraintName: product_offering_catalog_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: catalog_id
+        referencedTableName: offering_catalog
+        validate: true
+- changeSet:
+    id: 1767715654825-52
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: product_offering_characteristic
+        constraintName: product_offering_characteristic_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767715654825-53
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: promotion_id
+        baseTableName: promotion_benefit
+        constraintName: promotion_benefit_promotion_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: promotion_id
+        referencedTableName: promotion
+        validate: true
+- changeSet:
+    id: 1767715654825-54
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: promotion_offering
+        constraintName: promotion_offering_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767715654825-55
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: promotion_id
+        baseTableName: promotion_offering
+        constraintName: promotion_offering_promotion_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: promotion_id
+        referencedTableName: promotion
+        validate: true
+

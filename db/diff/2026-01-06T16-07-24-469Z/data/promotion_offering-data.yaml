@@ -1,0 +1,15 @@
+databaseChangeLog:
+
+- changeSet:
+    id: promotion_offering-insert-1000|10003
+    author: auto
+    changes:
+      - insert:
+          tableName: promotion_offering
+          columns:
+            - column:
+                name: promotion_id
+                value: '1000'
+            - column:
+                name: offering_id
+                value: '10003'

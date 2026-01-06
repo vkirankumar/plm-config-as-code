@@ -1,0 +1,52 @@
+databaseChangeLog:
+
+- changeSet:
+    id: offering_category-insert-1003
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '1003'
+            - column:
+                name: code
+                value: 'MOBILE'
+            - column:
+                name: name
+                value: 'Mobile Services'
+
+- changeSet:
+    id: offering_category-insert-1004
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '1004'
+            - column:
+                name: code
+                value: 'DEVICE'
+            - column:
+                name: name
+                value: 'Devices'
+
+- changeSet:
+    id: offering_category-insert-1005
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '1005'
+            - column:
+                name: code
+                value: 'BUNDLE'
+            - column:
+                name: name
+                value: 'Bundles'

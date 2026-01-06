@@ -1,0 +1,18 @@
+databaseChangeLog:
+
+- changeSet:
+    id: customer_category-insert-1001
+    author: auto
+    changes:
+      - insert:
+          tableName: customer_category
+          columns:
+            - column:
+                name: customer_category_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'CONSUMER'
+            - column:
+                name: name
+                value: 'Consumer'

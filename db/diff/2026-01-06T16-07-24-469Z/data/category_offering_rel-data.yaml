@@ -1,0 +1,43 @@
+databaseChangeLog:
+
+- changeSet:
+    id: category_offering_rel-insert-1003|10003
+    author: auto
+    changes:
+      - insert:
+          tableName: category_offering_rel
+          columns:
+            - column:
+                name: category_id
+                value: '1003'
+            - column:
+                name: offering_id
+                value: '10003'
+
+- changeSet:
+    id: category_offering_rel-insert-1004|10004
+    author: auto
+    changes:
+      - insert:
+          tableName: category_offering_rel
+          columns:
+            - column:
+                name: category_id
+                value: '1004'
+            - column:
+                name: offering_id
+                value: '10004'
+
+- changeSet:
+    id: category_offering_rel-insert-1005|10005
+    author: auto
+    changes:
+      - insert:
+          tableName: category_offering_rel
+          columns:
+            - column:
+                name: category_id
+                value: '1005'
+            - column:
+                name: offering_id
+                value: '10005'
