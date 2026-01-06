@@ -1,0 +1,17 @@
+databaseChangeLog:
+
+- changeSet:
+    id: catalog-delete-2
+    author: auto
+    changes:
+      - delete:
+          tableName: catalog
+          where: catalog_id = '2'
+
+- changeSet:
+    id: catalog-delete-3
+    author: auto
+    changes:
+      - delete:
+          tableName: catalog
+          where: catalog_id = '3'

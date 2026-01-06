@@ -1,0 +1,33 @@
+databaseChangeLog:
+
+- changeSet:
+    id: rel_c2o-delete-4
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2o
+          where: c2o_id = '4'
+
+- changeSet:
+    id: rel_c2o-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2o
+          where: c2o_id = '6'
+
+- changeSet:
+    id: rel_c2o-delete-7
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2o
+          where: c2o_id = '7'
+
+- changeSet:
+    id: rel_c2o-delete-8
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2o
+          where: c2o_id = '8'
