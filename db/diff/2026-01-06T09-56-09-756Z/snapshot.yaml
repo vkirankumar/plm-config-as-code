@@ -1,0 +1,658 @@
+databaseChangeLog:
+- changeSet:
+    id: 1767693388307-1
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: product_offering_pkey
+            name: offering_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: code
+            type: VARCHAR(64)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: status
+            type: VARCHAR(32)
+        - column:
+            name: available_from
+            type: date
+        - column:
+            name: available_to
+            type: date
+        - column:
+            defaultValueBoolean: false
+            name: is_top_offer
+            type: BOOLEAN
+        - column:
+            name: specification_id
+            type: BIGINT
+        tableName: product_offering
+- changeSet:
+    id: 1767693388307-2
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: rel_o2o_pkey
+            name: o2o_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: parent_offering_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: child_offering_id
+            type: BIGINT
+        - column:
+            defaultValueNumeric: 0
+            name: min_cardinality
+            type: INTEGER
+        - column:
+            defaultValueNumeric: 1
+            name: max_cardinality
+            type: INTEGER
+        - column:
+            name: override_type
+            type: VARCHAR(32)
+        tableName: rel_o2o
+- changeSet:
+    id: 1767693388307-3
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: rel_c2o_pkey
+            name: c2o_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: parent_category_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: child_offering_id
+            type: BIGINT
+        - column:
+            name: display_order
+            type: INTEGER
+        tableName: rel_c2o
+- changeSet:
+    id: 1767693388307-4
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: price_component_pkey
+            name: price_component_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: offering_id
+            type: BIGINT
+        - column:
+            name: type
+            type: VARCHAR(16)
+        - column:
+            name: currency
+            type: CHAR(3)
+        tableName: price_component
+- changeSet:
+    id: 1767693388307-5
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: catalog_pkey
+            name: catalog_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: code
+            type: VARCHAR(64)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        tableName: catalog
+- changeSet:
+    id: 1767693388307-6
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: material_pkey
+            name: material_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: offering_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: sku
+            type: VARCHAR(64)
+        - column:
+            name: color
+            type: VARCHAR(64)
+        - column:
+            name: storage
+            type: VARCHAR(64)
+        tableName: material
+- changeSet:
+    id: 1767693388307-7
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offering_category_pkey
+            name: category_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: catalog_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: code
+            type: VARCHAR(64)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: display_order
+            type: INTEGER
+        tableName: offering_category
+- changeSet:
+    id: 1767693388307-8
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: product_specification_pkey
+            name: specification_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: code
+            type: VARCHAR(64)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: type
+            type: VARCHAR(64)
+        tableName: product_specification
+- changeSet:
+    id: 1767693388307-9
+    author: runner (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: specification_id
+        indexName: idx_offering_spec
+        tableName: product_offering
+- changeSet:
+    id: 1767693388307-10
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: product_offering_code_key
+        tableName: product_offering
+- changeSet:
+    id: 1767693388307-11
+    author: runner (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: parent_offering_id
+        indexName: idx_o2o_parent
+        tableName: rel_o2o
+- changeSet:
+    id: 1767693388307-12
+    author: runner (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: parent_category_id
+        indexName: idx_c2o_category
+        tableName: rel_c2o
+- changeSet:
+    id: 1767693388307-13
+    author: runner (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: offering_id
+        indexName: idx_price_offering
+        tableName: price_component
+- changeSet:
+    id: 1767693388307-14
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: catalog_code_key
+        tableName: catalog
+- changeSet:
+    id: 1767693388307-15
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: sku
+        constraintName: material_sku_key
+        tableName: material
+- changeSet:
+    id: 1767693388307-16
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: offering_category_code_key
+        tableName: offering_category
+- changeSet:
+    id: 1767693388307-17
+    author: runner (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: product_specification_code_key
+        tableName: product_specification
+- changeSet:
+    id: 1767693388307-18
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offering_characteristic_pkey
+            name: off_char_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: offering_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: spec_char_id
+            type: BIGINT
+        - column:
+            name: visible
+            type: BOOLEAN
+        - column:
+            name: mandatory
+            type: BOOLEAN
+        - column:
+            name: modifiable
+            type: BOOLEAN
+        tableName: offering_characteristic
+- changeSet:
+    id: 1767693388307-19
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: price_value_pkey
+            name: price_value_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: price_component_id
+            type: BIGINT
+        - column:
+            name: amount
+            type: numeric(10, 2)
+        - column:
+            name: start_date
+            type: date
+        - column:
+            name: end_date
+            type: date
+        tableName: price_value
+- changeSet:
+    id: 1767693388307-20
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: rel_c2c_pkey
+            name: c2c_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: parent_category_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: child_category_id
+            type: BIGINT
+        - column:
+            name: display_order
+            type: INTEGER
+        tableName: rel_c2c
+- changeSet:
+    id: 1767693388307-21
+    author: runner (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: spec_characteristic_pkey
+            name: spec_char_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: specification_id
+            type: BIGINT
+        - column:
+            name: code
+            type: VARCHAR(64)
+        - column:
+            name: data_type
+            type: VARCHAR(32)
+        - column:
+            name: mandatory
+            type: BOOLEAN
+        tableName: spec_characteristic
+- changeSet:
+    id: 1767693388307-22
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: specification_id
+        baseTableName: product_offering
+        constraintName: fk_offering_spec
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: specification_id
+        referencedTableName: product_specification
+        validate: true
+- changeSet:
+    id: 1767693388307-23
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: material
+        constraintName: material_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767693388307-24
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: catalog_id
+        baseTableName: offering_category
+        constraintName: offering_category_catalog_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: catalog_id
+        referencedTableName: catalog
+        validate: true
+- changeSet:
+    id: 1767693388307-25
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: offering_characteristic
+        constraintName: offering_characteristic_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767693388307-26
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: spec_char_id
+        baseTableName: offering_characteristic
+        constraintName: offering_characteristic_spec_char_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: spec_char_id
+        referencedTableName: spec_characteristic
+        validate: true
+- changeSet:
+    id: 1767693388307-27
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offering_id
+        baseTableName: price_component
+        constraintName: price_component_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767693388307-28
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: price_component_id
+        baseTableName: price_value
+        constraintName: price_value_price_component_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: price_component_id
+        referencedTableName: price_component
+        validate: true
+- changeSet:
+    id: 1767693388307-29
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: child_category_id
+        baseTableName: rel_c2c
+        constraintName: rel_c2c_child_category_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: category_id
+        referencedTableName: offering_category
+        validate: true
+- changeSet:
+    id: 1767693388307-30
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: parent_category_id
+        baseTableName: rel_c2c
+        constraintName: rel_c2c_parent_category_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: category_id
+        referencedTableName: offering_category
+        validate: true
+- changeSet:
+    id: 1767693388307-31
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: child_offering_id
+        baseTableName: rel_c2o
+        constraintName: rel_c2o_child_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767693388307-32
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: parent_category_id
+        baseTableName: rel_c2o
+        constraintName: rel_c2o_parent_category_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: category_id
+        referencedTableName: offering_category
+        validate: true
+- changeSet:
+    id: 1767693388307-33
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: child_offering_id
+        baseTableName: rel_o2o
+        constraintName: rel_o2o_child_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767693388307-34
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: parent_offering_id
+        baseTableName: rel_o2o
+        constraintName: rel_o2o_parent_offering_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: offering_id
+        referencedTableName: product_offering
+        validate: true
+- changeSet:
+    id: 1767693388307-35
+    author: runner (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: specification_id
+        baseTableName: spec_characteristic
+        constraintName: spec_characteristic_specification_id_fkey
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: specification_id
+        referencedTableName: product_specification
+        validate: true
+

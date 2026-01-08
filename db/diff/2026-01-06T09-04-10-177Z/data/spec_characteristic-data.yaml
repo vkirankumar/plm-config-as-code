@@ -1,0 +1,113 @@
+databaseChangeLog:
+
+- changeSet:
+    id: spec_characteristic-delete-8
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '8'
+
+- changeSet:
+    id: spec_characteristic-delete-9
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '9'
+
+- changeSet:
+    id: spec_characteristic-delete-10
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '10'
+
+- changeSet:
+    id: spec_characteristic-delete-11
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '11'
+
+- changeSet:
+    id: spec_characteristic-delete-12
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '12'
+
+- changeSet:
+    id: spec_characteristic-delete-13
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '13'
+
+- changeSet:
+    id: spec_characteristic-delete-14
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '14'
+
+- changeSet:
+    id: spec_characteristic-delete-22
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '22'
+
+- changeSet:
+    id: spec_characteristic-delete-23
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '23'
+
+- changeSet:
+    id: spec_characteristic-delete-24
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '24'
+
+- changeSet:
+    id: spec_characteristic-delete-25
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '25'
+
+- changeSet:
+    id: spec_characteristic-delete-26
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '26'
+
+- changeSet:
+    id: spec_characteristic-delete-27
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '27'
+
+- changeSet:
+    id: spec_characteristic-delete-28
+    author: auto
+    changes:
+      - delete:
+          tableName: spec_characteristic
+          where: spec_char_id = '28'

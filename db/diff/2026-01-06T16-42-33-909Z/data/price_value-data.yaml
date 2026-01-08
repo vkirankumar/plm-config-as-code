@@ -1,0 +1,47 @@
+databaseChangeLog:
+
+- changeSet:
+    id: price_value-insert-1
+    author: auto
+    changes:
+      - insert:
+          tableName: price_value
+          columns:
+            - column:
+                name: price_value_id
+                value: '1'
+            - column:
+                name: price_component_id
+                value: '1'
+            - column:
+                name: amount
+                value: '37.50'
+            - column:
+                name: start_date
+                value: '2026-01-06'
+            - column:
+                name: end_date
+                value: null
+
+- changeSet:
+    id: price_value-insert-2
+    author: auto
+    changes:
+      - insert:
+          tableName: price_value
+          columns:
+            - column:
+                name: price_value_id
+                value: '2'
+            - column:
+                name: price_component_id
+                value: '2'
+            - column:
+                name: amount
+                value: '900.00'
+            - column:
+                name: start_date
+                value: '2026-01-06'
+            - column:
+                name: end_date
+                value: null

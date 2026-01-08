@@ -1,0 +1,9 @@
+databaseChangeLog:
+
+- changeSet:
+    id: material-delete-1
+    author: auto
+    changes:
+      - delete:
+          tableName: material
+          where: material_id = '1'

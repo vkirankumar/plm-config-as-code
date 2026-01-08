@@ -1,0 +1,33 @@
+databaseChangeLog:
+
+- changeSet:
+    id: offering_category-delete-2
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '2'
+
+- changeSet:
+    id: offering_category-delete-5
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '5'
+
+- changeSet:
+    id: offering_category-delete-6
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '6'
+
+- changeSet:
+    id: offering_category-delete-7
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '7'

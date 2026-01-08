@@ -1,0 +1,41 @@
+databaseChangeLog:
+
+- changeSet:
+    id: product_specification-insert-1000
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '1000'
+            - column:
+                name: code
+                value: 'MOBILE_PLAN_SPEC'
+            - column:
+                name: name
+                value: 'Mobile Plan Specification'
+            - column:
+                name: type
+                value: 'SERVICE'
+
+- changeSet:
+    id: product_specification-insert-1001
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '1001'
+            - column:
+                name: code
+                value: 'DEVICE_SPEC'
+            - column:
+                name: name
+                value: 'Mobile Device Specification'
+            - column:
+                name: type
+                value: 'PHYSICAL'

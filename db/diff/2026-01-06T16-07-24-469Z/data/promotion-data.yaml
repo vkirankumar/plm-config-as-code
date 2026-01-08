@@ -1,0 +1,27 @@
+databaseChangeLog:
+
+- changeSet:
+    id: promotion-insert-1000
+    author: auto
+    changes:
+      - insert:
+          tableName: promotion
+          columns:
+            - column:
+                name: promotion_id
+                value: '1000'
+            - column:
+                name: code
+                value: 'PROMO_10PCT'
+            - column:
+                name: name
+                value: '10% Subscription Discount'
+            - column:
+                name: promo_type
+                value: 'DISCOUNT'
+            - column:
+                name: valid_from
+                value: '2026-01-06'
+            - column:
+                name: valid_to
+                value: '2026-04-06'

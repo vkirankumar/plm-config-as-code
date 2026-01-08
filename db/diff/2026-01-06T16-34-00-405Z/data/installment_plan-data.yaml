@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+- changeSet:
+    id: installment_plan-insert-1000
+    author: auto
+    changes:
+      - insert:
+          tableName: installment_plan
+          columns:
+            - column:
+                name: installment_plan_id
+                value: '1000'
+            - column:
+                name: code
+                value: 'IP_24M'
+            - column:
+                name: tenure_months
+                value: 24
+            - column:
+                name: interest_rate
+                value: '0.00'
