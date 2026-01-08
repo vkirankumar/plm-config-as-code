@@ -30,7 +30,7 @@ const update = async (changeDirectoryName: string) => {
             password: process.env.DB_PASSWORD ?? '',
             username: process.env.DB_USERNAME ?? '',
             url: `jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET}`,
-            changeLogFile: `./db/diff/${changeDirectoryName}/data/master-changelog.yaml`,
+            changeLogFile: `./db/diff/${changeDirectoryName}/master-changelog.yaml`,
         };
         const liquibase: Liquibase = new Liquibase(config);
         await liquibase.update({});
@@ -49,7 +49,7 @@ const getDirectoryName = () => {
     if (directories.length) {
 
       isMasterChangeLogFound = readdirSync(
-        `./db/diff/${directories[directories.length - 1]}/data`
+        `./db/diff/${directories[directories.length - 1]}/`
       ).includes("master-changelog.yaml");
     }
     return isMasterChangeLogFound ? directories[directories.length - 1] : null;
