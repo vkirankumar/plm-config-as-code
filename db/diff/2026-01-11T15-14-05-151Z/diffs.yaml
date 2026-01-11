@@ -1,0 +1,22 @@
+databaseChangeLog:
+- changeSet:
+    id: delete-rel_c2c-3
+    author: auto
+    changes:
+      - delete:
+          tableName: rel_c2c
+          where: c2c_id = '3'
+- changeSet:
+    id: delete-offering_category-5
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '5'
+- changeSet:
+    id: delete-offering_category-6
+    author: auto
+    changes:
+      - delete:
+          tableName: offering_category
+          where: category_id = '6'
