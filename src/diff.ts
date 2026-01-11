@@ -387,15 +387,15 @@ ${changedCols
     // snapshot
     await generateSnapshot(OUT);
     console.log("✅ Diff generated in folder:", OUT);
+    if (output) {
+      fs.appendFileSync(output, `diffPath=${TS}\n`);
+    }
   } else {
-    console.log("✅ No changes detected, no folder or files created.");
+    console.log("✅ Databases in sync! No changes detected.");
   }
 
   await ref.end();
   await tgt.end();
-  if (output) {
-    fs.appendFileSync(output, `diffPath=${TS}\n`);
-}
 }
 
 run().catch((e) => {
