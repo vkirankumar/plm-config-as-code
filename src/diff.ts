@@ -5,6 +5,7 @@ import { configDotenv } from "dotenv";
 import { Liquibase, POSTGRESQL_DEFAULT_CONFIG } from "liquibase";
 
 types.setTypeParser(1082, (val: string) => val); // DATE
+const output = process.env.GITHUB_OUTPUT;
 configDotenv();
 
 /* ───────────── CONFIG ───────────── */
@@ -25,14 +26,29 @@ const DB_TGT = { ...DB_REF, database: process.env.DB_TARGET };
 /* ───────────── INTERNAL TABLES ───────────── */
 const INTERNAL_TABLES = new Set(["databasechangelog", "databasechangeloglock"]);
 
+const ALLOWED_TABLES = new Set<string>([
+  // "catalog",
+  // "spec_characteristic",
+  // "product_specification",
+  // "offering_category",
+  // "product_offering",
+  // "material",
+  // "offering_characteristic",
+  // "price_component",
+  // "price_value",
+  // "rel_c2c",
+  // "rel_c2o",
+  // "rel_o2o",
+]); // empty = all
+
 /* ───────────── HELPERS ───────────── */
 const wrap = (lines: string[]) => `databaseChangeLog:\n${lines.join("\n")}\n`;
 const yamlVal = (v: any) =>
   v === null
     ? "null"
     : typeof v === "number"
-    ? v
-    : `'${String(v).replace(/'/g, "''")}'`;
+      ? v
+      : `'${String(v).replace(/'/g, "''")}'`;
 const rowKey = (row: any, pk: string[]) => pk.map((k) => row[k]).join("|");
 const whereClause = (row: any, pk: string[]) =>
   pk.map((k) => `${k} = ${yamlVal(row[k])}`).join(" AND ");
@@ -192,23 +208,22 @@ async function run() {
           tableName: ${t}
           columns:
 ${cols
-  .map(
-    (c) => `
+          .map(
+            (c) => `
             - column:
                 name: ${c.column_name}
                 type: ${c.data_type}
                 constraints:
                   nullable: ${c.is_nullable === "YES"}`
-  )
-  .join("\n")}
-${
-  pk.length
-    ? `
+          )
+          .join("\n")}
+${pk.length
+          ? `
       - addPrimaryKey:
           tableName: ${t}
           columnNames: ${pk.join(", ")}`
-    : ""
-}
+          : ""
+        }
 `.trim()
     );
 
@@ -225,13 +240,13 @@ ${
           tableName: ${t}
           columns:
 ${Object.entries(r)
-  .map(
-    ([c, v]) =>
-      `            - column:\n                name: ${c}\n                value: ${yamlVal(
-        v
-      )}`
-  )
-  .join("\n")}
+            .map(
+              ([c, v]) =>
+                `            - column:\n                name: ${c}\n                value: ${yamlVal(
+                  v
+                )}`
+            )
+            .join("\n")}
 `.trim()
       );
     });
@@ -308,13 +323,13 @@ ${Object.entries(r)
           tableName: ${t}
           columns:
 ${Object.entries(r)
-  .map(
-    ([c, v]) =>
-      `            - column:\n                name: ${c}\n                value: ${yamlVal(
-        v
-      )}`
-  )
-  .join("\n")}
+            .map(
+              ([c, v]) =>
+                `            - column:\n                name: ${c}\n                value: ${yamlVal(
+                  v
+                )}`
+            )
+            .join("\n")}
 `.trim()
       );
     }
@@ -340,13 +355,13 @@ ${Object.entries(r)
           tableName: ${t}
           columns:
 ${changedCols
-  .map(
-    ([c, v]) =>
-      `            - column:\n                name: ${c}\n                value: ${yamlVal(
-        v
-      )}`
-  )
-  .join("\n")}
+            .map(
+              ([c, v]) =>
+                `            - column:\n                name: ${c}\n                value: ${yamlVal(
+                  v
+                )}`
+            )
+            .join("\n")}
           where: ${whereClause(r, pk)}
 `.trim()
       );
@@ -378,6 +393,9 @@ ${changedCols
 
   await ref.end();
   await tgt.end();
+  if (output) {
+    fs.appendFileSync(output, `diffPath=${TS}\n`);
+}
 }
 
 run().catch((e) => {
