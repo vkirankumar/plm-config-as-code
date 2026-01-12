@@ -1,0 +1,8 @@
+databaseChangeLog:
+- changeSet:
+    id: fk-sub_service-service
+    author: auto
+    changes:
+      - addForeignKeyConstraint:
+          baseTableName: sub_service
+          referencedTableName: service

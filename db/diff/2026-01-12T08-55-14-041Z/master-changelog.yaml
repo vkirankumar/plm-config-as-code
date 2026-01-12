@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include: 
+      file: ./db/diff/2026-01-12T08-55-14-041Z/new-tables.yaml
+  - include: 
+      file: ./db/diff/2026-01-12T08-55-14-041Z/new-fks.yaml
+  - include: 
+      file: ./db/diff/2026-01-12T08-55-14-041Z/diffs.yaml

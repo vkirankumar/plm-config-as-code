@@ -1,0 +1,53 @@
+databaseChangeLog:
+- changeSet:
+    id: create-service
+    author: auto
+    changes:
+      - createTable:
+          tableName: service
+          columns:
+
+            - column:
+                name: service_id
+                type: integer
+                constraints:
+                  nullable: false
+
+            - column:
+                name: name
+                type: text
+                constraints:
+                  nullable: false
+
+      - addPrimaryKey:
+          tableName: service
+          columnNames: service_id
+- changeSet:
+    id: create-sub_service
+    author: auto
+    changes:
+      - createTable:
+          tableName: sub_service
+          columns:
+
+            - column:
+                name: id
+                type: integer
+                constraints:
+                  nullable: false
+
+            - column:
+                name: service_id
+                type: integer
+                constraints:
+                  nullable: false
+
+            - column:
+                name: name
+                type: character varying
+                constraints:
+                  nullable: false
+
+      - addPrimaryKey:
+          tableName: sub_service
+          columnNames: id
