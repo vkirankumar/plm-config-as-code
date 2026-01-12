@@ -1,404 +1,373 @@
 import { Client, types } from "pg";
-import fs from "fs";
-import path from "path";
+import * as fs from "fs";
 import { configDotenv } from "dotenv";
 import { Liquibase, POSTGRESQL_DEFAULT_CONFIG } from "liquibase";
+import { error } from "console";
 
-types.setTypeParser(1082, (val: string) => val); // DATE
+/* ────────────── SETUP ────────────── */
+types.setTypeParser(1082, (v: string) => v);
 const output = process.env.GITHUB_OUTPUT;
 configDotenv();
 
-/* ───────────── CONFIG ───────────── */
-const TS = new Date().toISOString().replace(/[:.]/g, "-");
-const OUT = path.resolve(`db/diff/${TS}`);
+/* ────────────── TYPES ────────────── */
+type Row = Record<string, any>;
+type TablePK = string[];
 
-const DB_REF = {
+type FK = {
+  constraintName: string;
+  baseTable: string;
+  baseColumns: string[];
+  referencedTable: string;
+  referencedColumns: string[];
+};
+
+type TableDiff = {
+  table: string;
+  inserts: string[];
+  updates: string[];
+  deletes: string[];
+};
+
+/* ────────────── CONFIG ────────────── */
+const refDbConfig = {
   host: process.env.DB_HOST,
-  port: Number(process.env.PORT ?? 5432),
+  port: Number(process.env.PORT || 5432),
   database: process.env.DB_REFERENCE,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   ssl: { rejectUnauthorized: false },
 };
 
-const DB_TGT = { ...DB_REF, database: process.env.DB_TARGET };
+const tgtDbConfig = {
+  host: process.env.DB_HOST,
+  port: Number(process.env.PORT || 5432),
+  database: process.env.DB_TARGET,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  ssl: { rejectUnauthorized: false },
+};
 
-/* ───────────── INTERNAL TABLES ───────────── */
-const INTERNAL_TABLES = new Set(["databasechangelog", "databasechangeloglock"]);
+const INTERNAL_TABLES = ["databasechangelog", "databasechangeloglock"];
+const TIMESTAMP = new Date().toISOString().replace(/[:.]/g, "-");
+const OUTPUT_DIR = ./db/diff/${TIMESTAMP};
 
-const ALLOWED_TABLES = new Set<string>([
-  // "catalog",
-  // "spec_characteristic",
-  // "product_specification",
-  // "offering_category",
-  // "product_offering",
-  // "material",
-  // "offering_characteristic",
-  // "price_component",
-  // "price_value",
-  // "rel_c2c",
-  // "rel_c2o",
-  // "rel_o2o",
-]); // empty = all
-
-/* ───────────── HELPERS ───────────── */
-const wrap = (lines: string[]) => `databaseChangeLog:\n${lines.join("\n")}\n`;
-const yamlVal = (v: any) =>
+/* ────────────── YAML HELPERS ────────────── */
+const yamlValue = (v: any) =>
   v === null
     ? "null"
-    : typeof v === "number"
-      ? v
-      : `'${String(v).replace(/'/g, "''")}'`;
-const rowKey = (row: any, pk: string[]) => pk.map((k) => row[k]).join("|");
-const whereClause = (row: any, pk: string[]) =>
-  pk.map((k) => `${k} = ${yamlVal(row[k])}`).join(" AND ");
+    : typeof v === "number" || typeof v === "boolean"
+    ? String(v)
+    : '${String(v).replace(/'/g, "''")}';
 
-/* ───────────── METADATA ───────────── */
-async function tables(c: Client) {
-  return (
-    await c.query(`
+const rowKey = (r: Row, pk: TablePK) =>
+  pk.map(k => String(r[k])).join("|");
+
+const whereClause = (r: Row, pk: TablePK) =>
+  pk.map(k => ${k} = ${yamlValue(r[k])}).join(" AND ");
+
+/* ────────────── METADATA LOADERS ────────────── */
+async function loadTables(c: Client): Promise<string[]> {
+  const r = await c.query(`
     SELECT table_name FROM information_schema.tables
     WHERE table_schema='public' AND table_type='BASE TABLE'
-  `)
-  ).rows
-    .map((r) => r.table_name)
-    .filter((t) => !INTERNAL_TABLES.has(t));
+  `);
+  return r.rows
+    .map(x => x.table_name.toLowerCase())
+    .filter(t => !INTERNAL_TABLES.includes(t));
 }
 
-async function columns(c: Client, t: string) {
-  return (
-    await c.query(`
-    SELECT column_name, data_type, is_nullable
-    FROM information_schema.columns
-    WHERE table_name='${t}'
-  `)
-  ).rows;
-}
-
-async function pks(c: Client) {
-  const m = new Map<string, string[]>();
-  (
-    await c.query(`
+async function loadPKs(c: Client): Promise<Map<string, TablePK>> {
+  const r = await c.query(`
     SELECT tc.table_name, kcu.column_name
     FROM information_schema.table_constraints tc
     JOIN information_schema.key_column_usage kcu
       ON tc.constraint_name = kcu.constraint_name
     WHERE tc.constraint_type='PRIMARY KEY'
-  `)
-  ).rows.forEach((r) => {
-    if (!m.has(r.table_name)) m.set(r.table_name, []);
-    m.get(r.table_name)!.push(r.column_name);
+      AND tc.table_schema='public'
+    ORDER BY kcu.ordinal_position
+  `);
+  const m = new Map<string, TablePK>();
+  r.rows.forEach(x => {
+    const t = x.table_name.toLowerCase();
+    if (!m.has(t)) m.set(t, []);
+    m.get(t)!.push(x.column_name);
   });
   return m;
 }
 
-async function fks(c: Client) {
-  return (
-    await c.query(`
-    SELECT tc.table_name child, ccu.table_name parent
+async function loadFKs(c: Client): Promise<FK[]> {
+  const r = await c.query(`
+    SELECT
+      tc.constraint_name,
+      tc.table_name AS base_table,
+      kcu.column_name AS base_column,
+      ccu.table_name AS referenced_table,
+      ccu.column_name AS referenced_column,
+      kcu.ordinal_position
     FROM information_schema.table_constraints tc
+    JOIN information_schema.key_column_usage kcu
+      ON tc.constraint_name = kcu.constraint_name
     JOIN information_schema.constraint_column_usage ccu
-      ON tc.constraint_name = ccu.constraint_name
+      ON ccu.constraint_name = tc.constraint_name
     WHERE tc.constraint_type='FOREIGN KEY'
-  `)
-  ).rows.filter(
-    (f) => !INTERNAL_TABLES.has(f.child) && !INTERNAL_TABLES.has(f.parent)
-  );
-}
+      AND tc.table_schema='public'
+    ORDER BY tc.constraint_name, kcu.ordinal_position
+  `);
 
-/* ───────────── FK-SAFE TOPO SORT ───────────── */
-function topoSort(
-  tables: string[],
-  fks: { child: string; parent: string }[],
-  dropOrder = false
-) {
-  const graph = new Map<string, Set<string>>();
-  tables.forEach((t) => graph.set(t, new Set()));
+  const map = new Map<string, FK>();
 
-  fks.forEach((fk) => {
-    if (!graph.has(fk.child) || !graph.has(fk.parent)) return;
-    if (dropOrder) graph.get(fk.parent)?.add(fk.child); // reverse for drop
-    else graph.get(fk.child)?.add(fk.parent); // normal for insert
-  });
-
-  const visited = new Set<string>();
-  const result: string[] = [];
-  function visit(t: string) {
-    if (!visited.has(t)) {
-      visited.add(t);
-      graph.get(t)?.forEach(visit);
-      result.push(t);
+  for (const row of r.rows) {
+    const name = row.constraint_name.toLowerCase();
+    if (!map.has(name)) {
+      map.set(name, {
+        constraintName: name,
+        baseTable: row.base_table.toLowerCase(),
+        baseColumns: [],
+        referencedTable: row.referenced_table.toLowerCase(),
+        referencedColumns: [],
+      });
     }
-  }
-  tables.forEach(visit);
-  return result;
-}
-
-/* ───────────── SNAPSHOT ───────────── */
-async function generateSnapshot(outDir: string) {
-  const lb = new Liquibase({
-    ...POSTGRESQL_DEFAULT_CONFIG,
-    url: `jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET}`,
-    username: process.env.DB_USERNAME!,
-    password: process.env.DB_PASSWORD!,
-  });
-  await lb.generateChangeLog({
-    changelogFile: `${outDir}/snapshot.yaml`,
-    diffTypes: "table,column,primaryKey,foreignKey,index,uniqueConstraint,data",
-  });
-}
-
-/* ───────────── MAIN ───────────── */
-async function run() {
-  const ref = new Client(DB_REF);
-  const tgt = new Client(DB_TGT);
-  await ref.connect();
-  await tgt.connect();
-
-  const refTables = await tables(ref);
-  const tgtTables = await tables(tgt);
-  const pkMap = await pks(ref);
-  const fkList = await fks(ref);
-
-  let hasChanges = false;
-  const fileContents: { name: string; lines: string[] }[] = [];
-
-  /* ───── DROPPED TABLES ───── */
-  let dropped = tgtTables.filter((t) => !refTables.includes(t));
-  dropped = topoSort(dropped, fkList, true); // children first
-  if (dropped.length) {
-    hasChanges = true;
-    fileContents.push({
-      name: "drop-tables.yaml",
-      lines: dropped.map((t) =>
-        `
-- changeSet:
-    id: drop-${t}
-    author: auto
-    preConditions:
-      - tableExists:
-          tableName: ${t}
-    changes:
-      - dropTable:
-          tableName: ${t}
-`.trim()
-      ),
-    });
+    const fk = map.get(name)!;
+    fk.baseColumns.push(row.base_column);
+    fk.referencedColumns.push(row.referenced_column);
   }
 
-  /* ───── NEW TABLES + ROW INSERTS ───── */
-  let newTables = refTables.filter((t) => !tgtTables.includes(t));
-  newTables = topoSort(newTables, fkList, false); // parents first
-  const newTableCS: string[] = [];
-  const newFKCS: string[] = [];
+  return [...map.values()];
+}
 
-  for (const t of newTables) {
-    hasChanges = true;
-    const cols = await columns(ref, t);
-    const pk = pkMap.get(t) ?? [];
+/* ────────────── FK TOPO SORT (TABLE LEVEL) ────────────── */
+function topoSortTables(tables: string[], fks: FK[]): string[] {
+  const g = new Map<string, Set<string>>();
+  tables.forEach(t => g.set(t, new Set()));
 
-    // 1️⃣ create table + PK
-    newTableCS.push(
-      `
+  fks.forEach(fk => g.get(fk.baseTable)?.add(fk.referencedTable));
+
+  const res: string[] = [];
+  const v = new Set<string>();
+  const visiting = new Set<string>();
+
+  const dfs = (t: string) => {
+    if (visiting.has(t)) throw new Error(FK cycle at ${t});
+    if (!v.has(t)) {
+      visiting.add(t);
+      g.get(t)!.forEach(dfs);
+      visiting.delete(t);
+      v.add(t);
+      res.push(t);
+    }
+  };
+
+  tables.forEach(dfs);
+  return res;
+}
+
+/* ────────────── CHANGESET BUILDERS ────────────── */
+const insertCS = (t: string, r: Row, pk: TablePK) => `
 - changeSet:
-    id: create-${t}
-    author: auto
-    changes:
-      - createTable:
-          tableName: ${t}
-          columns:
-${cols
-          .map(
-            (c) => `
-            - column:
-                name: ${c.column_name}
-                type: ${c.data_type}
-                constraints:
-                  nullable: ${c.is_nullable === "YES"}`
-          )
-          .join("\n")}
-${pk.length
-          ? `
-      - addPrimaryKey:
-          tableName: ${t}
-          columnNames: ${pk.join(", ")}`
-          : ""
-        }
-`.trim()
-    );
-
-    // 2️⃣ add row inserts for new table
-    const rows = (await ref.query(`SELECT * FROM ${t}`)).rows;
-    rows.forEach((r) => {
-      newTableCS.push(
-        `
-- changeSet:
-    id: insert-${t}-${rowKey(r, pk)}
+    id: ${t}-insert-${rowKey(r, pk)}
     author: auto
     changes:
       - insert:
           tableName: ${t}
           columns:
 ${Object.entries(r)
-            .map(
-              ([c, v]) =>
-                `            - column:\n                name: ${c}\n                value: ${yamlVal(
-                  v
-                )}`
-            )
-            .join("\n")}
-`.trim()
-      );
-    });
-  }
+  .map(
+    ([c, v]) =>
+      `            - column:
+                name: ${c}
+                value: ${yamlValue(v)}`
+  )
+  .join("\n")}`;
 
-  // 3️⃣ add FK constraints for new tables
-  fkList
-    .filter((f) => newTables.includes(f.child))
-    .forEach((f) => {
-      newFKCS.push(
-        `
+const updateCS = (t: string, r: Row, cols: string[], pk: TablePK) => `
 - changeSet:
-    id: fk-${f.child}-${f.parent}
-    author: auto
-    changes:
-      - addForeignKeyConstraint:
-          baseTableName: ${f.child}
-          referencedTableName: ${f.parent}
-`.trim()
-      );
-    });
-
-  if (newTableCS.length)
-    fileContents.push({ name: "new-tables.yaml", lines: newTableCS });
-  if (newFKCS.length)
-    fileContents.push({ name: "new-fks.yaml", lines: newFKCS });
-
-  /* ───── ROW-LEVEL DATA DIFF ───── */
-  const diffs: string[] = [];
-  const existingTables = refTables.filter((t) => tgtTables.includes(t));
-  const deleteOrder = topoSort(existingTables, fkList, true); // children first
-  const insertOrder = topoSort(existingTables, fkList, false); // parents first
-
-  // DELETE rows first
-  for (const t of deleteOrder) {
-    const pk = pkMap.get(t);
-    if (!pk?.length) continue;
-    const refRows = (await ref.query(`SELECT * FROM ${t}`)).rows;
-    const tgtRows = (await tgt.query(`SELECT * FROM ${t}`)).rows;
-    const refMap = new Map(refRows.map((r) => [rowKey(r, pk), r]));
-    const deletes = tgtRows.filter((r) => !refMap.has(rowKey(r, pk)));
-    for (const r of deletes) {
-      diffs.push(
-        `
-- changeSet:
-    id: delete-${t}-${rowKey(r, pk)}
-    author: auto
-    changes:
-      - delete:
-          tableName: ${t}
-          where: ${whereClause(r, pk)}
-`.trim()
-      );
-    }
-  }
-
-  // INSERT + UPDATE for existing tables
-  for (const t of insertOrder) {
-    const pk = pkMap.get(t);
-    if (!pk?.length) continue;
-    const refRows = (await ref.query(`SELECT * FROM ${t}`)).rows;
-    const tgtRows = (await tgt.query(`SELECT * FROM ${t}`)).rows;
-    const tgtMap = new Map(tgtRows.map((r) => [rowKey(r, pk), r]));
-
-    const inserts = refRows.filter((r) => !tgtMap.has(rowKey(r, pk)));
-    for (const r of inserts) {
-      diffs.push(
-        `
-- changeSet:
-    id: insert-${t}-${rowKey(r, pk)}
-    author: auto
-    changes:
-      - insert:
-          tableName: ${t}
-          columns:
-${Object.entries(r)
-            .map(
-              ([c, v]) =>
-                `            - column:\n                name: ${c}\n                value: ${yamlVal(
-                  v
-                )}`
-            )
-            .join("\n")}
-`.trim()
-      );
-    }
-
-    const updates = refRows.filter((r) => {
-      const tRow = tgtMap.get(rowKey(r, pk));
-      return (
-        tRow && Object.keys(r).some((c) => String(r[c]) !== String(tRow[c]))
-      );
-    });
-    for (const r of updates) {
-      const tRow = tgtMap.get(rowKey(r, pk))!;
-      const changedCols = Object.entries(r).filter(
-        ([c, v]) => String(tRow[c]) !== String(v)
-      );
-      diffs.push(
-        `
-- changeSet:
-    id: update-${t}-${rowKey(r, pk)}
+    id: ${t}-update-${rowKey(r, pk)}
     author: auto
     changes:
       - update:
           tableName: ${t}
           columns:
-${changedCols
-            .map(
-              ([c, v]) =>
-                `            - column:\n                name: ${c}\n                value: ${yamlVal(
-                  v
-                )}`
-            )
-            .join("\n")}
-          where: ${whereClause(r, pk)}
-`.trim()
-      );
-    }
-  }
+${cols
+  .map(
+    c =>
+      `            - column:
+                name: ${c}
+                value: ${yamlValue(r[c])}`
+  )
+  .join("\n")}
+          where: ${whereClause(r, pk)}`;
 
-  if (diffs.length) fileContents.push({ name: "diffs.yaml", lines: diffs });
-  if (fileContents.length) hasChanges = true;
+const deleteCS = (t: string, r: Row, pk: TablePK) => `
+- changeSet:
+    id: ${t}-delete-${rowKey(r, pk)}
+    author: auto
+    changes:
+      - delete:
+          tableName: ${t}
+          where: ${whereClause(r, pk)}`;
 
-  /* ───── WRITE FILES ONLY IF CHANGES ───── */
-  if (hasChanges) {
-    fs.mkdirSync(OUT, { recursive: true });
-    for (const f of fileContents)
-      fs.writeFileSync(path.join(OUT, f.name), wrap(f.lines));
+const addFKCS = (fk: FK) => `
+- changeSet:
+    id: fk-${fk.constraintName}
+    author: auto
+    changes:
+      - addForeignKeyConstraint:
+          constraintName: ${fk.constraintName}
+          baseTableName: ${fk.baseTable}
+          baseColumnNames: ${fk.baseColumns.join(", ")}
+          referencedTableName: ${fk.referencedTable}
+          referencedColumnNames: ${fk.referencedColumns.join(", ")}`;
 
-    // master changelog
-    fs.writeFileSync(
-      path.join(OUT, "master-changelog.yaml"),
-      wrap(fileContents.map((f) => `  - include: 
-      file: ./db/diff/${TS}/${f.name}`))
+/* ────────────── DIFF ENGINE ────────────── */
+async function diffTable(
+  t: string,
+  pk: TablePK,
+  ref: Client,
+  tgt: Client
+): Promise<TableDiff | null> {
+  if (!pk?.length) return null;
+
+  const refRows = (await ref.query(SELECT * FROM ${t})).rows;
+  let tgtRows: Row[] = [];
+  try {
+    tgtRows = (await tgt.query(SELECT * FROM ${t})).rows;
+  } catch {}
+
+  const rMap = new Map(refRows.map(r => [rowKey(r, pk), r]));
+  const tMap = new Map(tgtRows.map(r => [rowKey(r, pk), r]));
+
+  const inserts: string[] = [];
+  const updates: string[] = [];
+  const deletes: string[] = [];
+
+  for (const r of refRows)
+    if (!tMap.has(rowKey(r, pk)))
+      inserts.push(insertCS(t, r, pk));
+
+  for (const r of refRows) {
+    const tRow = tMap.get(rowKey(r, pk));
+    if (!tRow) continue;
+    const changed = Object.keys(r).filter(
+      c => String(r[c]) !== String(tRow[c])
     );
-
-    // snapshot
-    await generateSnapshot(OUT);
-    console.log("✅ Diff generated in folder:", OUT);
-    if (output) {
-      fs.appendFileSync(output, `diffPath=${TS}\n`);
-    }
-  } else {
-    console.log("✅ Databases in sync! No changes detected.");
+    if (changed.length)
+      updates.push(updateCS(t, r, changed, pk));
   }
 
-  await ref.end();
-  await tgt.end();
+  for (const r of tgtRows)
+    if (!rMap.has(rowKey(r, pk)))
+      deletes.push(deleteCS(t, r, pk));
+
+  if (!inserts.length && !updates.length && !deletes.length) return null;
+  return { table: t, inserts, updates, deletes };
 }
 
-run().catch((e) => {
-  console.error(e);
+/* ────────────── MAIN ────────────── */
+async function run() {
+  const ref = new Client(refDbConfig);
+  const tgt = new Client(tgtDbConfig);
+  await ref.connect();
+  await tgt.connect();
+
+  const tables = await loadTables(ref);
+  const targetTables = await loadTables(tgt);
+  const existing = tables.filter(t => targetTables.includes(t));
+
+  const pks = await loadPKs(ref);
+  const fks = await loadFKs(ref);
+
+  const order = topoSortTables(existing, fks);
+  const reverse = [...order].reverse();
+
+  const diffs = new Map<string, TableDiff>();
+  for (const t of order) {
+    const d = await diffTable(t, pks.get(t)!, ref, tgt);
+    if (d) diffs.set(t, d);
+  }
+
+  const hasDataChanges = [...diffs.values()].some(
+    d => d.inserts.length || d.updates.length || d.deletes.length
+  );
+
+  const newFKs = fks; // assume missing in target for simplicity
+
+  if (!hasDataChanges && !newFKs.length) {
+    console.log("✅ No differences detected. Nothing generated.");
+    await ref.end();
+    await tgt.end();
+    return;
+  }
+
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
+  if (hasDataChanges) {
+    const del: string[] = [];
+    const upd: string[] = [];
+    const ins: string[] = [];
+
+    reverse.forEach(t => diffs.get(t)?.deletes.forEach(x => del.push(x)));
+    order.forEach(t => {
+      diffs.get(t)?.updates.forEach(x => upd.push(x));
+      diffs.get(t)?.inserts.forEach(x => ins.push(x));
+    });
+
+    if (del.length)
+      fs.writeFileSync(${OUTPUT_DIR}/deletes.yaml, databaseChangeLog:\n${del.join("\n")});
+    if (upd.length)
+      fs.writeFileSync(${OUTPUT_DIR}/updates.yaml, databaseChangeLog:\n${upd.join("\n")});
+    if (ins.length)
+      fs.writeFileSync(${OUTPUT_DIR}/inserts.yaml, databaseChangeLog:\n${ins.join("\n")});
+  }
+
+  if (newFKs.length) {
+    fs.writeFileSync(
+      ${OUTPUT_DIR}/new-fks.yaml,
+      databaseChangeLog:\n${newFKs.map(addFKCS).join("\n")}
+    );
+  }
+
+  const includes = [];
+  if (fs.existsSync(${OUTPUT_DIR}/deletes.yaml)) includes.push("deletes.yaml");
+  if (fs.existsSync(${OUTPUT_DIR}/updates.yaml)) includes.push("updates.yaml");
+  if (fs.existsSync(${OUTPUT_DIR}/inserts.yaml)) includes.push("inserts.yaml");
+  if (fs.existsSync(${OUTPUT_DIR}/new-fks.yaml)) includes.push("new-fks.yaml");
+
+  fs.writeFileSync(
+    ${OUTPUT_DIR}/master-changelog.yaml,
+    `databaseChangeLog:\n${includes
+      .map(f => `  - include: { file: ${f} }`)
+      .join("\n")}`
+  );
+  if (output) {
+      fs.appendFileSync(output, `diffPath=${TS}\n`);
+  }
+  await snapshot();
+  await ref.end();
+  await tgt.end();
+  console.log("✅ Diff + FK changelog generated");
+}
+
+/* ────────────── SNAPSHOT ────────────── */
+async function snapshot() {
+  try {
+    const liquibase = new Liquibase({
+      ...POSTGRESQL_DEFAULT_CONFIG,
+      url: jdbc:postgresql://${process.env.DB_HOST}:${process.env.PORT}/${process.env.DB_TARGET},
+      username: process.env.DB_USERNAME!,
+      password: process.env.DB_PASSWORD!,
+    });
+
+    await liquibase.generateChangeLog({
+      diffTypes:
+        "data,table,column,primaryKey,foreignKey,index,uniqueConstraint",
+      changelogFile: ${OUTPUT_DIR}/snapshot.yaml,
+    });
+  } catch (e) {
+    error("Snapshot failed", e);
+  }
+}
+
+run().catch(e => {
+  console.error("❌ Failed:", e);
   process.exit(1);
 });
