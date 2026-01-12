@@ -1,0 +1,114 @@
+databaseChangeLog:
+- changeSet:
+    id: insert-offering_category-5
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '5'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'FIXED'
+            - column:
+                name: name
+                value: 'Fixed Internet'
+            - column:
+                name: display_order
+                value: 2
+- changeSet:
+    id: insert-offering_category-6
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '6'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'FIXED_PLANS'
+            - column:
+                name: name
+                value: 'Internet plans'
+            - column:
+                name: display_order
+                value: 2
+- changeSet:
+    id: insert-rel_c2c-3
+    author: auto
+    changes:
+      - insert:
+          tableName: rel_c2c
+          columns:
+            - column:
+                name: c2c_id
+                value: '3'
+            - column:
+                name: parent_category_id
+                value: '5'
+            - column:
+                name: child_category_id
+                value: '6'
+            - column:
+                name: display_order
+                value: 3
+- changeSet:
+    id: insert-product_specification-7
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '7'
+            - column:
+                name: code
+                value: 'FIXED_SPEED_200'
+            - column:
+                name: name
+                value: 'Fixed Internet speed 200Mbps'
+            - column:
+                name: type
+                value: 'Monthly Plan'
+- changeSet:
+    id: insert-product_offering-5
+    author: auto
+    changes:
+      - insert:
+          tableName: product_offering
+          columns:
+            - column:
+                name: offering_id
+                value: '5'
+            - column:
+                name: code
+                value: 'PLAN_200Mbps'
+            - column:
+                name: name
+                value: 'Monthly plan 200 Mbps'
+            - column:
+                name: status
+                value: 'Active'
+            - column:
+                name: available_from
+                value: null
+            - column:
+                name: available_to
+                value: null
+            - column:
+                name: is_top_offer
+                value: 'false'
+            - column:
+                name: specification_id
+                value: '7'
