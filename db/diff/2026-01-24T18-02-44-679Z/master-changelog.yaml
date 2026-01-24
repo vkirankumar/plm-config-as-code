@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - include:
+      file: ./db/diff/2026-01-24T18-02-44-679Z/new-tables.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-02-44-679Z/new-fks.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-02-44-679Z/diff-catalog.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-02-44-679Z/diff-offering_category.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-02-44-679Z/diff-rel_c2c.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-02-44-679Z/diff-product_specification.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-02-44-679Z/diff-product_offering.yaml

@@ -1,0 +1,45 @@
+databaseChangeLog:
+- changeSet:
+    id: insert-offering_category-5
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '5'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'FIXED'
+            - column:
+                name: name
+                value: 'Fixed Internet'
+            - column:
+                name: display_order
+                value: 2
+- changeSet:
+    id: insert-offering_category-6
+    author: auto
+    changes:
+      - insert:
+          tableName: offering_category
+          columns:
+            - column:
+                name: category_id
+                value: '6'
+            - column:
+                name: catalog_id
+                value: '1'
+            - column:
+                name: code
+                value: 'FIXED_PLANS'
+            - column:
+                name: name
+                value: 'Internet plans'
+            - column:
+                name: display_order
+                value: 2

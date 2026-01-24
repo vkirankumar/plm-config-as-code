@@ -1,0 +1,7 @@
+databaseChangeLog:
+- changeSet:
+    id: create-patent
+    author: auto
+    changes:
+      - createTable:
+          tableName: patent
