@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: ./db/diff/2026-01-24T18-56-25-118Z/new-table-patent.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-56-25-118Z/insert-patent.yaml
