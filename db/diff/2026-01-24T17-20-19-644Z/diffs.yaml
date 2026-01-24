@@ -1,0 +1,31 @@
+databaseChangeLog:
+- changeSet:
+    id: delete-product_offering-5
+    author: auto
+    changes:
+      - delete:
+          tableName: product_offering
+          where: offering_id = '5'
+- changeSet:
+    id: delete-product_specification-7
+    author: auto
+    changes:
+      - delete:
+          tableName: product_specification
+          where: specification_id = '7'
+- changeSet:
+    id: insert-catalog-5
+    author: auto
+    changes:
+      - insert:
+          tableName: catalog
+          columns:
+            - column:
+                name: catalog_id
+                value: '5'
+            - column:
+                name: code
+                value: 'Catalogue Update'
+            - column:
+                name: name
+                value: 'My Catalog update'
