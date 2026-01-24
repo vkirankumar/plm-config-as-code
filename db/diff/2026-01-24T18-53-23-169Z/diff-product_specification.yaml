@@ -1,0 +1,20 @@
+databaseChangeLog:
+- changeSet:
+    id: insert-product_specification-7
+    author: auto
+    changes:
+      - insert:
+          tableName: product_specification
+          columns:
+            - column:
+                name: specification_id
+                value: '7'
+            - column:
+                name: code
+                value: 'FIXED_SPEED_200'
+            - column:
+                name: name
+                value: 'Fixed Internet speed 200Mbps'
+            - column:
+                name: type
+                value: 'Monthly Plan'
