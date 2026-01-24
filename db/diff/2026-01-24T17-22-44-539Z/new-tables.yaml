@@ -1,0 +1,46 @@
+databaseChangeLog:
+- changeSet:
+    id: create-patent
+    author: auto
+    changes:
+      - createTable:
+          tableName: patent
+          columns:
+
+            - column:
+                name: patent_key
+                type: integer
+                constraints:
+                  nullable: false
+
+            - column:
+                name: catalog_id
+                type: integer
+                constraints:
+                  nullable: true
+
+            - column:
+                name: name
+                type: text
+                constraints:
+                  nullable: false
+
+      - addPrimaryKey:
+          tableName: patent
+          columnNames: patent_key
+- changeSet:
+    id: insert-patent-1
+    author: auto
+    changes:
+      - insert:
+          tableName: patent
+          columns:
+            - column:
+                name: patent_key
+                value: 1
+            - column:
+                name: name
+                value: 'Test'
+            - column:
+                name: catalog_id
+                value: 5
