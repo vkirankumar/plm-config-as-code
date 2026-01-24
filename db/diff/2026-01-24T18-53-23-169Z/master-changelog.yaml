@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - include:
+      file: ./db/diff/2026-01-24T18-53-23-169Z/delete-patent.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-53-23-169Z/diff-catalog.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-53-23-169Z/diff-offering_category.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-53-23-169Z/diff-rel_c2c.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-53-23-169Z/diff-product_specification.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-53-23-169Z/diff-product_offering.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-53-23-169Z/diff-patent.yaml
