@@ -57,13 +57,23 @@ async function tables(c: Client): Promise<string[]> {
   return r.rows.map(r => r.table_name).filter(t => !INTERNAL_TABLES.has(t));
 }
 
+async function columns(c: Client, t: string) {
+  const r = await c.query(`
+    SELECT column_name, data_type, is_nullable
+    FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='${t}'
+    ORDER BY ordinal_position
+  `);
+  return r.rows;
+}
+
 async function pks(c: Client): Promise<Map<string, string[]>> {
   const r = await c.query(`
     SELECT tc.table_name, kcu.column_name
     FROM information_schema.table_constraints tc
     JOIN information_schema.key_column_usage kcu
       ON tc.constraint_name = kcu.constraint_name
-    WHERE tc.constraint_type='PRIMARY KEY'
+    WHERE tc.constraint_type='PRIMARY KEY' AND tc.table_schema='public'
   `);
   const m = new Map<string, string[]>();
   r.rows.forEach(r => {
@@ -92,16 +102,13 @@ async function fks(c: Client): Promise<FK[]> {
     FROM pg_constraint con
     JOIN pg_class src ON src.oid = con.conrelid
     JOIN pg_class tgt ON tgt.oid = con.confrelid
-    CROSS JOIN LATERAL unnest(con.conkey)
-      WITH ORDINALITY AS s(attnum, pos)
-    CROSS JOIN LATERAL unnest(con.confkey)
-      WITH ORDINALITY AS t(attnum, pos)
+    CROSS JOIN LATERAL unnest(con.conkey) WITH ORDINALITY AS s(attnum, pos)
+    CROSS JOIN LATERAL unnest(con.confkey) WITH ORDINALITY AS t(attnum, pos)
     JOIN pg_attribute sa
       ON sa.attrelid = src.oid AND sa.attnum = s.attnum
     JOIN pg_attribute ta
       ON ta.attrelid = tgt.oid AND ta.attnum = t.attnum
-    WHERE con.contype = 'f'
-      AND s.pos = t.pos
+    WHERE con.contype = 'f' AND s.pos = t.pos
     GROUP BY con.conname, src.relname, tgt.relname
   `);
 
@@ -143,8 +150,11 @@ async function generateRowDiff(
   ref: Client,
   tgt: Client
 ): Promise<{ inserts: string[]; updates: string[]; deletes: string[] }> {
-  const refRows = (await ref.query(`SELECT * FROM ${table}`)).rows;
-  const tgtRows = (await tgt.query(`SELECT * FROM ${table}`)).rows;
+  const refRows = (await ref.query(`SELECT * FROM public."${table}"`)).rows;
+  let tgtRows: any[] = [];
+  try {
+    tgtRows = (await tgt.query(`SELECT * FROM public."${table}"`)).rows;
+  } catch {}
   const refMap = new Map(refRows.map(r => [rowKey(r, pk), r]));
   const tgtMap = new Map(tgtRows.map(r => [rowKey(r, pk), r]));
 
@@ -234,7 +244,7 @@ async function run() {
   let hasChanges = false;
   const files: { name: string; lines: string[] }[] = [];
 
-  /* DROPPED TABLES */
+  // DROPPED TABLES
   let dropped = tgtTables.filter(t => !refTables.includes(t));
   dropped = topoSort(dropped, tgtFKs, true); // children first
   if (dropped.length) {
@@ -249,22 +259,40 @@ async function run() {
 `.trim()) });
   }
 
-  /* NEW TABLES */
+  // NEW TABLES
   let created = refTables.filter(t => !tgtTables.includes(t));
   created = topoSort(created, refFKs, false); // parents first
-  if (created.length) {
-    hasChanges = true;
-    files.push({ name: "new-tables.yaml", lines: created.map(t => `
+  for (const t of created) {
+    const cols = await columns(ref, t);
+    const pk = pkMap.get(t) ?? [];
+    const lines: string[] = [];
+    lines.push(`
 - changeSet:
     id: create-${t}
     author: auto
     changes:
       - createTable:
           tableName: ${t}
-`.trim()) });
+          columns:
+${cols.map(c => `            - column:
+                name: ${c.column_name}
+                type: ${c.data_type}
+                constraints:
+                  nullable: ${c.is_nullable === "YES"}`).join("\n")}
+${pk.length ? `
+      - addPrimaryKey:
+          tableName: ${t}
+          columnNames: ${pk.join(", ")}` : ""}
+`.trim());
+    files.push({ name: `new-table-${t}.yaml`, lines });
+    hasChanges = true;
+
+    // Row inserts for new table
+    const { inserts } = await generateRowDiff(t, pk, ref, tgt);
+    if (inserts.length) files.push({ name: `insert-${t}.yaml`, lines: inserts });
   }
 
-  /* NEW FKs */
+  // NEW FKS
   const tgtFKMap = new Set(
     tgtFKs.map(f => `${f.child}|${f.parent}|${f.childCols.join(",")}`)
   );
@@ -290,10 +318,9 @@ async function run() {
     });
   }
 
-  /* ROW-LEVEL DIFFS */
+  // EXISTING TABLE ROW DIFFS
   const existingTables = refTables.filter(t => tgtTables.includes(t));
 
-  // DELETE first, FK-safe (children first)
   for (const t of topoSort(existingTables, refFKs, true)) {
     const pk = pkMap.get(t) ?? [];
     const { deletes } = await generateRowDiff(t, pk, ref, tgt);
@@ -303,7 +330,6 @@ async function run() {
     }
   }
 
-  // INSERT next, FK-safe (parents first)
   for (const t of topoSort(existingTables, refFKs, false)) {
     const pk = pkMap.get(t) ?? [];
     const { inserts, updates } = await generateRowDiff(t, pk, ref, tgt);
@@ -313,7 +339,7 @@ async function run() {
     }
   }
 
-  /* WRITE FILES */
+  // WRITE FILES
   if (hasChanges) {
     fs.mkdirSync(OUT, { recursive: true });
     for (const f of files) fs.writeFileSync(path.join(OUT, f.name), wrap(f.lines));
