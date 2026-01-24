@@ -1,0 +1,17 @@
+databaseChangeLog:
+- changeSet:
+    id: insert-patent-2
+    author: auto
+    changes:
+      - insert:
+          tableName: patent
+          columns:
+            - column:
+                name: patent_key
+                value: 2
+            - column:
+                name: name
+                value: 'Test'
+            - column:
+                name: catalog_id
+                value: 5

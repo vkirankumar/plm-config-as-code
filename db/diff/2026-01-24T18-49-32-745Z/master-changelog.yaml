@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: ./db/diff/2026-01-24T18-49-32-745Z/new-table-patent.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-49-32-745Z/insert-patent.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-49-32-745Z/new-fks.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-49-32-745Z/diff-catalog.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-49-32-745Z/diff-offering_category.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-49-32-745Z/diff-rel_c2c.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-49-32-745Z/diff-product_specification.yaml
+  - include:
+      file: ./db/diff/2026-01-24T18-49-32-745Z/diff-product_offering.yaml
