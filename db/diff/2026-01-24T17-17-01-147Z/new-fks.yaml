@@ -1,0 +1,8 @@
+databaseChangeLog:
+- changeSet:
+    id: fk-patent-catalog
+    author: auto
+    changes:
+      - addForeignKeyConstraint:
+          baseTableName: patent
+          referencedTableName: catalog
