@@ -112,19 +112,25 @@ jobs:
           assignees: vkirankumar
           reviewers: vkirankumar
 
-  upload-logs-to-elastic:
-    runs-on: ubuntu-latest
-    needs: diffChecker
-    if: always()
-    steps:
-    - name: Upload GitHub Action workflows logs to elastic
-      uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
-      with:
-        github_token: "${{ secrets.GITHUB }}"
-        github_org: "plm-config-as-code"
-        github_repository: "plm-config-as-code"
-        github_run_id: "${{ github.run_id }}"
-        elastic_host: "RkVwQS01c0JWOVN2Q3RQQ0FPOXk6WmhIQ0ZLLVlUOXNybGE3eFFkdHpqQQ=="
-        elastic_api_key_id: "1113204205"
-        elastic_api_key: "RkVwQS01c0JWOVN2Q3RQQ0FPOXk6WmhIQ0ZLLVlUOXNybGE3eFFkdHpqQQ=="
-        elastic_index: "github-cicd-logs"
+      - name: Post log to Elastic
+        env:
+            ELASTIC_URL: "https://my-observability-project-c8cf0b.kb.us-east-1.aws.elastic.cloud/"
+            ELASTIC_API_KEY: "RkVwQS01c0JWOVN2Q3RQQ0FPOXk6WmhIQ0ZLLVlUOXNybGE3eFFkdHpqQQ=="
+        run: |
+            curl -X POST "$ELASTIC_URL/github-cicd-logs" \
+              -H "Authorization: ApiKey $ELASTIC_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "@timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'",
+                "source": "github-actions",
+                "repo": "'"${{ github.repository }}"'",
+                "workflow": "'"${{ github.workflow }}"'",
+                "job": "'"${{ github.job }}"'",
+                "run_id": '"${{ github.run_id }}"',
+                "run_number": '"${{ github.run_number }}"',
+                "actor": "'"${{ github.actor }}"'",
+                "branch": "'"${{ github.ref_name }}"'",
+                "commit": "'"${{ github.sha }}"'",
+                "status": "success",
+                "message": "Build step completed"
+              }'
