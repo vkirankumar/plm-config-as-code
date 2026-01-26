@@ -2,7 +2,7 @@ name: Apply changes on merge
 
 on:
   push:
-    branches: [ "main" ]
+    # branches: [ "main" ]
 
 jobs:
   MergeCatalogChanges:
