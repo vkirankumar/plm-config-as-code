@@ -117,7 +117,7 @@ jobs:
             ELASTIC_URL: "https://my-observability-project-c8cf0b.kb.us-east-1.aws.elastic.cloud/"
             ELASTIC_API_KEY: "RkVwQS01c0JWOVN2Q3RQQ0FPOXk6WmhIQ0ZLLVlUOXNybGE3eFFkdHpqQQ=="
         run: |
-            curl -X POST "$ELASTIC_URL/github-cicd-logs" \
+            curl -X POST https://my-observability-project-c8cf0b.es.us-east-1.aws.elastic.cloud:443/_bulk?pretty \
               -H "Authorization: ApiKey $ELASTIC_API_KEY" \
               -H "Content-Type: application/json" \
               -d '{
