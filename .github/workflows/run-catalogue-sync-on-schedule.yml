@@ -111,3 +111,20 @@ jobs:
             automated pr
           assignees: vkirankumar
           reviewers: vkirankumar
+
+  upload-logs-to-elastic:
+    runs-on: ubuntu-latest
+    needs: diffChecker
+    if: always()
+    steps:
+    - name: Upload GitHub Action workflows logs to elastic
+      uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
+      with:
+        github_token: "${{ secrets.GITHUB }}"
+        github_org: "plm-config-as-code"
+        github_repository: "plm-config-as-code"
+        github_run_id: "${{ github.run_id }}"
+        elastic_host: "RkVwQS01c0JWOVN2Q3RQQ0FPOXk6WmhIQ0ZLLVlUOXNybGE3eFFkdHpqQQ=="
+        elastic_api_key_id: "1113204205"
+        elastic_api_key: "RkVwQS01c0JWOVN2Q3RQQ0FPOXk6WmhIQ0ZLLVlUOXNybGE3eFFkdHpqQQ=="
+        elastic_index: "github-cicd-logs"
