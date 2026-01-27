@@ -45,19 +45,35 @@ jobs:
       - name: Build 
         run: npm run build
 
-  upload-logs-to-elastic:
-      runs-on: ubuntu-latest
-      needs: diffChecker
-      if: always()
-      steps:
+  # upload-logs-to-elastic:
+  #     runs-on: ubuntu-latest
+  #     needs: diffChecker
+  #     if: always()
+  #     steps:
+  #     - name: Upload GitHub Action workflows logs to elastic
+  #       uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
+  #       with:
+  #         github_token: "${{ secrets.GITHUB_TOKEN }}"
+  #         github_org: "shahargl"
+  #         github_repository: "plm-catalog-as-code"
+  #         github_run_id: "${{ github.run_id }}"
+  #         elastic_host: "https://my-observability-project-c8cf0b.es.us-east-1.aws.elastic.cloud:443"
+  #         elastic_api_key_id: "Tk_1_psBV0iAtm5aeQdm"
+  #         elastic_api_key: "jVyfJcxpr9nXUDJ_b2npiQ"
+  #         elastic_index: "ci-cd"
+
+  send-logs-to-elastic:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
       - name: Upload GitHub Action workflows logs to elastic
-        uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
+        uses: knutfr/github-actions-to-elk@v1.0.4
         with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
-          github_org: "shahargl"
-          github_repository: "plm-catalog-as-code"
-          github_run_id: "${{ github.run_id }}"
-          elastic_host: "https://my-observability-project-c8cf0b.es.us-east-1.aws.elastic.cloud:443"
-          elastic_api_key_id: "Tk_1_psBV0iAtm5aeQdm"
-          elastic_api_key: "jVyfJcxpr9nXUDJ_b2npiQ"
-          elastic_index: "ci-cd"
+          githubToken: "${{ secrets.GITHUB_TOKEN }}"
+          githubOrg: "vkirankumar"
+          githubRepository: "plm-config-as-code"
+          githubRunId: "${{ github.run_id }}"
+          elasticHost: "https://my-observability-project-c8cf0b.es.us-east-1.aws.elastic.cloud:443"
+          elasticApiKeyId: "Tk_1_psBV0iAtm5aeQdm"
+          elasticApiKey: "jVyfJcxpr9nXUDJ_b2npiQ"
+          elasticIndex: "github"
