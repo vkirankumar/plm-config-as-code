@@ -112,38 +112,38 @@ jobs:
           assignees: vkirankumar
           reviewers: vkirankumar
 
-      - name: Post log to Elastic
-        env:
-            ELASTIC_URL: "https://my-observability-project-c8cf0b.kb.us-east-1.aws.elastic.cloud/"
-            ELASTIC_API_KEY: "RkVwQS01c0JWOVN2Q3RQQ0FPOXk6WmhIQ0ZLLVlUOXNybGE3eFFkdHpqQQ=="
-        run: |
-            BODY=$(jq -n \
-              --arg ts "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-              --arg repo "${{ github.repository }}" \
-              --arg workflow "${{ github.workflow }}" \
-              --arg job "${{ github.job }}" \
-              --arg actor "${{ github.actor }}" \
-              --arg branch "${{ github.ref_name }}" \
-              --arg sha "${{ github.sha }}" \
-              --arg status "success" \
-              --arg msg "Build completed" \
-              '{
-                "@timestamp": $ts,
-                source: "github-actions",
-                repo: $repo,
-                workflow: $workflow,
-                job: $job,
-                actor: $actor,
-                branch: $branch,
-                commit: $sha,
-                status: $status,
-                message: $msg
-              }'
-            )
+      # - name: Post log to Elastic
+      #   env:
+      #       ELASTIC_URL: "https://my-observability-project-c8cf0b.kb.us-east-1.aws.elastic.cloud/"
+      #       ELASTIC_API_KEY: "RkVwQS01c0JWOVN2Q3RQQ0FPOXk6WmhIQ0ZLLVlUOXNybGE3eFFkdHpqQQ=="
+      #   run: |
+      #       BODY=$(jq -n \
+      #         --arg ts "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+      #         --arg repo "${{ github.repository }}" \
+      #         --arg workflow "${{ github.workflow }}" \
+      #         --arg job "${{ github.job }}" \
+      #         --arg actor "${{ github.actor }}" \
+      #         --arg branch "${{ github.ref_name }}" \
+      #         --arg sha "${{ github.sha }}" \
+      #         --arg status "success" \
+      #         --arg msg "Build completed" \
+      #         '{
+      #           "@timestamp": $ts,
+      #           source: "github-actions",
+      #           repo: $repo,
+      #           workflow: $workflow,
+      #           job: $job,
+      #           actor: $actor,
+      #           branch: $branch,
+      #           commit: $sha,
+      #           status: $status,
+      #           message: $msg
+      #         }'
+      #       )
 
-            echo "Posting:"
-            echo "$BODY"
-            curl -v -X POST "https://my-observability-project-c8cf0b.es.us-east-1.aws.elastic.cloud:443/logs-github-actions-$(date +%Y.%m.%d)/_doc" \
-            -H "Authorization: ApiKey $ELASTIC_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "$BODY"
+      #       echo "Posting:"
+      #       echo "$BODY"
+      #       curl -v -X POST "https://my-observability-project-c8cf0b.es.us-east-1.aws.elastic.cloud:443/logs-github-actions-$(date +%Y.%m.%d)/_doc" \
+      #       -H "Authorization: ApiKey $ELASTIC_API_KEY" \
+      #       -H "Content-Type: application/json" \
+      #       -d "$BODY"
