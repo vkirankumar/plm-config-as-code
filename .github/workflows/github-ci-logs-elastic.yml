@@ -1,0 +1,63 @@
+name: Github Elastic Logs
+
+# Controls when the workflow will run
+on:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    # inputs:
+    #   cr:
+    #     description: 'ServiceNow change request number'
+    #     type: string
+    #     required: true
+    #   release_note:
+    #     description: 'Confluence link to release notes'
+    #     type: string
+    #     required: true
+    #   jira_release:
+    #     description: 'Jira release'
+    #     type: string
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "diffChecker"
+  diffChecker:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x] #I want to test code on these node-versions
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v6
+
+      # Runs a single command using the runners shell
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build 
+        run: npm run build
+
+  upload-logs-to-elastic:
+      runs-on: ubuntu-latest
+      needs: diffChecker
+      if: always()
+      steps:
+      - name: Upload GitHub Action workflows logs to elastic
+        uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
+        with:
+          github_token: "${{ secrets.GITHUB }}"
+          github_org: "shahargl"
+          github_repository: "plm-catalog-as-code"
+          github_run_id: "${{ github.run_id }}"
+          elastic_host: "https://my-observability-project-c8cf0b.es.us-east-1.aws.elastic.cloud:443"
+          elastic_api_key_id: "Tk_1_psBV0iAtm5aeQdm"
+          elastic_api_key: "jVyfJcxpr9nXUDJ_b2npiQ"
+          elastic_index: "ci-cd"
