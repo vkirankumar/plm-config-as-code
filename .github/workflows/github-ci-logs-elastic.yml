@@ -67,6 +67,14 @@ jobs:
     needs: diffChecker
     if: always()
     steps:
+      - name: Debug GitHub context
+        run: |
+          echo "REPO=$GITHUB_REPOSITORY"
+          echo "RUN_ID=$GITHUB_RUN_ID"
+          echo "JOB_ID=$GITHUB_JOB"
+          curl -i \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
       - name: Upload GitHub Action workflows logs to elastic
         uses: knutfr/github-actions-to-elk@v1.0.4
         with:
