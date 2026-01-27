@@ -22,4 +22,4 @@ jobs:
           elasticHost: "https://my-observability-project-c8cf0b.es.us-east-1.aws.elastic.cloud:443"
           elasticApiKeyId: "${{ secrets.ELASTIC_KEY_ID }}"
           elasticApiKey: "${{ secrets.ELASTIC_KEY }}"
-          elasticIndex: "github"
+          elasticIndex: "github-action-logs"
