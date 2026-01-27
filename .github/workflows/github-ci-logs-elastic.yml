@@ -2,8 +2,8 @@ name: Ship GitHub Logs to Elastic
 
 on:
   workflow_run:
-    workflows: ["Run catalogue sync"]
-    types: [completed]
+    # workflows: ["Run catalogue sync"]
+    # types: [completed]
 
 permissions:
   actions: read

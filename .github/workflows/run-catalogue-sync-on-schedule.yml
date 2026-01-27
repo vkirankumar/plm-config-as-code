@@ -57,7 +57,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_TARGET: ${{ secrets.DB_TARGET }}
           DB_REFERENCE: ${{ secrets.DB_REFERENCE }}
-        run: npm run diff
+        run: npm run diff:prod
 
       - name: Check DB diff
         run: echo Data diff generated in directory = ${{ steps.transform.outputs.diffPath }}
@@ -111,6 +111,15 @@ jobs:
             automated pr
           assignees: vkirankumar
           reviewers: vkirankumar
+      - name: Notify dedicated teams channel
+        uses: jdcargile/ms-teams-notification@v1.4
+        with:
+          github-token: ${{ github.token }} # this will use the runner's token.
+          ms-teams-webhook-uri: ${{ secrets.TEAMS_WEBHOOK }}
+          notification-summary: Pipeline with release-id '${{ github.sha }}' started by '${{ github.actor }}'.
+          notification-color: 17a2b8
+          timezone: Europe/Amsterdam
+          verbose-logging: true
 
       # - name: Post log to Elastic
       #   env:
