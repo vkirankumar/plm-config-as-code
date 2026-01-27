@@ -53,7 +53,7 @@ jobs:
       - name: Upload GitHub Action workflows logs to elastic
         uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
         with:
-          github_token: "${{ secrets.GITHUB }}"
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
           github_org: "shahargl"
           github_repository: "plm-catalog-as-code"
           github_run_id: "${{ github.run_id }}"
