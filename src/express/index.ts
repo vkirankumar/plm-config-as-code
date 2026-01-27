@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
     res.send(`
         <html>
             <body>
-                <h1>My React App!!</h1>
+                <h1>New Node app with ArgoCD!!</h1>
             </body>
         </html>`);
 });
