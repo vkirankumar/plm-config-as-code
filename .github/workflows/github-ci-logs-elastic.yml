@@ -64,6 +64,7 @@ jobs:
 
   send-logs-to-elastic:
     runs-on: ubuntu-latest
+    needs: diffChecker
     if: always()
     steps:
       - name: Upload GitHub Action workflows logs to elastic
