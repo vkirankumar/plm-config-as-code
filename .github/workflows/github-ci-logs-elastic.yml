@@ -69,7 +69,7 @@ jobs:
       - name: Upload GitHub Action workflows logs to elastic
         uses: knutfr/github-actions-to-elk@v1.0.4
         with:
-          githubToken: "${{ secrets.GITHUB_TOKEN }}"
+          githubToken: "${{ secrets.PAT }}"
           githubOrg: "vkirankumar"
           githubRepository: "plm-config-as-code"
           githubRunId: "${{ github.run_id }}"
